@@ -209,17 +209,17 @@
 (def codemirror? (partial is-asset-of-type? "codemirror"))
 
 (defn select-assets-matching [predicate]
-  (let [raw-assets (sort (filter predicate raw-assets))
+  (let [raw-assets (sort (filter predicate raw-assets)) ; Have to re-sort because filter doesn't preserve order
         categorized-assets (first (reduce compute-asset-map [{} ""] raw-assets))]
     categorized-assets))
 
 
 ;; Maps {"thing-name" {:js jsfn :min-js minjsfn ...}}
 
-(def theme-assets (select-assets-matching theme?))
-(def mode-assets (select-assets-matching mode?))
-(def addon-assets (select-assets-matching addon?))
-(def keymap-assets (select-assets-matching keymap?))
+(def all-theme-assets (select-assets-matching theme?))
+(def all-mode-assets (select-assets-matching mode?))
+(def all-addon-assets (select-assets-matching addon?))
+(def all-keymap-assets (select-assets-matching keymap?))
 
 (defn assets-for
   "Get the specific assets for a given asset name and type"
@@ -229,14 +229,14 @@
 
 ;; And now the stuff intended to be used from outside!
 
-(def theme-names (sort (keys theme-assets)))
-(def mode-names (sort (keys mode-assets)))
-(def addon-names (sort (keys addon-assets)))
-(def keymap-names (sort (keys keymap-assets)))
+(def theme-names (sort (keys all-theme-assets)))
+(def mode-names (sort (keys all-mode-assets)))
+(def addon-names (sort (keys all-addon-assets)))
+(def keymap-names (sort (keys all-keymap-assets)))
 
-(def theme (partial assets-for theme-assets))
-(def mode (partial assets-for mode-assets))
-(def addon (partial assets-for addon-assets))
-(def keymap (partial assets-for keymap-assets))
+(def theme (partial assets-for all-theme-assets))
+(def mode (partial assets-for all-mode-assets))
+(def addon (partial assets-for all-addon-assets))
+(def keymap (partial assets-for all-keymap-assets))
 
-(def codemirror (get (select-assets-matching codemirror?) "codemirror"))
+(def codemirror-assets (get (select-assets-matching codemirror?) "codemirror"))
