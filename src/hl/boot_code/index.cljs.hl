@@ -1,0 +1,56 @@
+(page "index.html"
+      (:require
+       [javelin.core :as j :refer [cell cell=]]
+       [boot-code.rpc :as rpc]
+       [boot-code.ui :as ui]))
+
+(comment
+  :CLJS eval in the browser  *DONE*
+  :Pouchdb code
+  :LoadSave from file system
+  :Load CodeMirror from CDNs
+  :Initial layout
+  :CodeMirror from loaded code
+  )
+
+(rpc/init)
+
+(html
+ (head
+  ;; Page metadata
+  (html-meta :http-equiv "Content-Type" :content "text/html; charset=UTF-8")
+  (html-meta :http-equiv "X-UA-Compatible" :content "IE=edge")
+  (html-meta :name "viewport" :content "width=device-width,initial-scale=1")
+  (html-meta :name "msapplication-tap-highlight" :content "no")
+
+  ;; Android 5 Chrome color
+  (html-meta :name "theme-color" :content "#EE6E73")
+
+  ;; Fonts + Materialize CSS
+  (link :href "https://fonts.googleapis.com/icon?family=Material+Icons" :rel "stylesheet")
+  (link :href "https://fonts.googleapis.com/css?family=Roboto|Inconsolata" :rel "stylesheet" :type "text/css")
+  (link :href "https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css" :rel "stylesheet" :type "text/css")
+  (link :type "text/css" :rel "stylesheet" :href ui/mz-css :media "screen,projection")
+
+  ;; Favicons - TODO: Need to actually put some icons in the images folder
+  (link :rel "apple-touch-icon-precomposed" :href "images/favicon/apple-touch-icon-152x152.png")
+  (html-meta :name "msapplication-TileColor" :content "#FFFFFF")
+  (html-meta :name "msapplication-TileImage" :content "images/favicon/mstile-144x144.png")
+  (link :rel "icon" :href "images/favicon/favicon-32x32.png" :sizes "32x32")
+
+  (cell= ui/css)
+  (link :href "app.css" :rel "stylesheet")
+
+  (title (text "~{rpc/project-name} ~{rpc/random-number}"))) ; Probably put current project name in the editor
+
+ (body
+  (cell= ui/body)
+
+  (div :class "hiddendiv common")
+  (div :class "drag-target" :data-sidenav "nav-mobile" :style "left:0px ; touch-action:pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0,0,0,0;")
+
+  (cell= (apply ui/page-init))
+
+  #_(div :class "footer" (cell= (str rpc/loading " " rpc/error)))
+
+  (script :src ui/mz-js)))
