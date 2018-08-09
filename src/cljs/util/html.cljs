@@ -76,6 +76,12 @@
   (set! (. dom -innerHTML) content))
 
 
+;; Better:
+;;
+;; https://stackoverflow.com/questions/13121948/dynamically-add-script-tag-with-src-that-may-include-document-write
+;;
+;; See the answer with 9 +1s
+
 (defn get-script
   "Load the specified .js file using $.getScript from JQuery.
 
@@ -95,11 +101,13 @@
   scripts is a vector of scripts to load.
   script-complete is called repeatedly when each script is done loading.
   all-complete is the continuation function to call when scripts are all loaded."
-  [baseurl scripts all-complete]
+  [baseurl scripts script-complete all-complete]
   (if (empty? scripts)
     (js/setTimeout all-complete 4000)
     (get-script (str baseurl (first scripts))
-                #(get-scripts baseurl (rest scripts) all-complete))))
+                (fn []
+                  (script-complete (first scripts) (count scripts))
+                  (get-scripts baseurl (rest scripts) all-complete)))))
 
 
 (defn append-child
