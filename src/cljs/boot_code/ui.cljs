@@ -4,8 +4,7 @@
   (:require
    [hoplon.core :refer [link header h1 div textarea text br]]
    [javelin.core :refer [cell]]
-   [paren-soup.core :as ps]
-   #_[cljsjs.codemirror :as cm]))
+   [paren-soup.core :as ps]))
 
 
 (def materialize-base "//cdn.muicss.com/mui-0.9.36")
