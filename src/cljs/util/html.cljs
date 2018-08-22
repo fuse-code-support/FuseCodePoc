@@ -81,9 +81,36 @@
 ;; https://stackoverflow.com/questions/13121948/dynamically-add-script-tag-with-src-that-may-include-document-write
 ;;
 ;; See the answer with 9 +1s
+;;
+;; Also useful:
+;;
+;; https://www.html5rocks.com/en/tutorials/speed/script-loading/
+
 
 (defn get-script
-  "Load the specified .js file using $.getScript from JQuery.
+  ([script-info script-cb final-cb script-number script-total]
+   (let [script-dom-node (cond
+                           (fn? script-info) (script-info)
+                           (vector? script-info) (let [[url sri] script-info]
+                                                   (h/script :src url :integrity sri :crossorigin "anonymous"))
+                           (string? script-info) (h/script :src script-info)
+                           :default              (throw (str "ERROR: Unable to load script: " script-info)))]
+     (set! (.-onload script-dom-node)
+           (fn []
+             (script-cb script-number script-total)
+             (when (= script-number script-total)
+               (final-cb script-number script-total))))
+     (.appendChild (-> js/document .-head) script-dom-node)))
+
+  ([script-info script-cb]
+   (get-script script-info (fn [a b]) script-cb 1 1))
+
+  ([scripts script-cb final-cb]
+   (letfn [chain-next [scripts script-cb]])))
+
+
+(defn get-script
+  "Load the specified .js file
 
   script - The script to load.
   continuation-fn - The function to call when the script is loaded."
