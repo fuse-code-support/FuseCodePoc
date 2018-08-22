@@ -14,11 +14,21 @@
 
 (def initial-code "(ns code.ui)
 
-(def environment {:prod
-                  {:body
-                    {:h1 [:class \"foo\" \"Hello, world\"]}}})
+(def h hoplon.core)
+(def body hoplon.core.body)
+(def h1 hoplon.core.h1)
+(def p hoplon.core.p)
 
-(-> environment :prod :body)")
+(def environment {:prod
+                  (fn []
+                    (body
+                      (h1 :class \"foo\" \"Hello page\")))})
+
+(.appendChild (-> js/document .-body) (p \"Hello, world\"))
+
+(name \"foo\")
+
+(-> environment :prod)")
 
 
 (defn parensoup-init [] (ps/init-all))
