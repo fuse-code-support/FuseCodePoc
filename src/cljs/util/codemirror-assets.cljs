@@ -209,7 +209,7 @@
 (def codemirror? (partial is-asset-of-type? "codemirror"))
 
 (defn select-assets-matching [predicate]
-  (let [raw-assets (sort (filter predicate raw-assets)) ; Have to re-sort because filter doesn't preserve order
+  (let [raw-assets (sort (filter predicate raw-assets)) ; Have to sort because map keys don't preserve order
         categorized-assets (first (reduce compute-asset-map [{} ""] raw-assets))]
     categorized-assets))
 
