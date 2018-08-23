@@ -11,6 +11,9 @@
 (def mz-css (str materialize-base "/css/mui.min.css"))
 (def mz-js (str materialize-base "/js/mui.min.js"))
 
+;; TODO: Make this work like the map built in codemirror-assets.cljs
+(def materialize {:js (str materialize-base "/js/mui.min.js")
+                  :css (str materialize-base "/css/mui.min.css")})
 
 (def initial-code "(ns code.ui)
 
@@ -18,6 +21,12 @@
 (def body hoplon.core.body)
 (def h1 hoplon.core.h1)
 (def p hoplon.core.p)
+
+(def project boot-code.rpc.project)
+(def files (:files @project))
+
+(first files)
+(map #(:full-name %) files)
 
 (def environment {:prod
                   (fn []
