@@ -16,9 +16,18 @@
 
 (defonce config
   (atom {:boot
-         {:repo default-repo
-          :repo-path (expand-path default-repo)
-          :init-namespace "fusion.init"}}))
+         {;; :local-repo (str default-repo "/bootstrap")
+          ;; :local-repo-path (str (expand-path default-repo) "/bootstrap")
+          :name "bootstrap"
+          :remote-repo "git@github.com:/coconutpalm/webfusion-boot"
+          :init "webfusion/boot"}       ; Maybe each repo should have a config naming the init namespace/function
+
+         :plugins
+         [{:name "materialize-light-theme"
+           :remote-repo "git@github.com:/coconutpalm/webfusion-mz-light"}
+
+          {:name "webfusion-text"
+           :remote-repo "git@github.com:/coconutpalm/webfusion-text"}]}))
 
 
 ;; File path stuff
