@@ -11,7 +11,7 @@ that happens to implement an awesome programmer's editor and programming environ
 
 ## TODO
 
-* Finish integrating replumb / implementing the main loader
+* Finish integrating replumb / implementing the main loader in repl.cljs
 
 * UI ideas
   * Quick sidebar for things like quick outline, open-file tree, git status, etc.
