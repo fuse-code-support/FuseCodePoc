@@ -1,4 +1,4 @@
-# webfusion text - The next step after Atom
+# webfusion - The next step after Atom
 
 WebFusion Text is the intersection of a number of good ideas I've encountered over the years
 that happens to implement an awesome programmer's editor and programming environment:
@@ -14,16 +14,25 @@ that happens to implement an awesome programmer's editor and programming environ
 * Finish integrating replumb / implementing the main loader in repl.cljs
 
 * UI ideas
+  * Splitters.  Ctrl-1, Ctrl-2, Ctrl-3, Ctrl-0 to add and remove.
   * Quick sidebar for things like quick outline, open-file tree, git status, etc.
   * File tree - type to filter
   * Need a way to compress the number of tabs to make manageable?
+  * Synchronized editors of same file.  Across multiple tabs/connections.  Displaying remote highlight.
 
 * Refactoring
   * Move everything but bootstrap logic to separate repos as spiked in api.clj
-  * Config.edn in each plugin repo's root naming the plugin and its activator
+  * Config.edn in each plugin repo's root naming the plugin, its activator, its dependencies
+    * Dependencies allow us to compute load order
   * Link via the config mechanism
   * Write default config file if one doesn't already exist
   * Download webfusion-text via git during bootstrap
+  * Get the UI up, then download and activate plugins in the background
+    * Push activation jobs from the back-end to the UI via the refresh-state mechanism or similar
+    * `git pull` already-downloaded plugins before activating
+    * Load everything we can, then display what we couldn't load (and dependencies) if needed
+      * Just create an editor buffer in Markdown with the report?
+    * Support Javascript-based plugins?
 
 * Job API
   * Job name
