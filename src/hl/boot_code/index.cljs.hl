@@ -4,17 +4,6 @@
        [boot-code.rpc :as rpc]
        [boot-code.ui :as ui]))
 
-(comment
-  :CLJS eval in the browser  *DONE*
-  :Pouchdb code
-  :LoadSave from file system
-  :Load CodeMirror from CDNs
-  :Initial layout
-  :CodeMirror from loaded code
-  )
-
-(rpc/init)
-
 (html
  (head
   ;; Page metadata
@@ -49,8 +38,10 @@
   (div :class "hiddendiv common")
   (div :class "drag-target" :data-sidenav "nav-mobile" :style "left:0px ; touch-action:pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0,0,0,0;")
 
-  (cell= (apply ui/page-init))
+  ;; Materialize JS
+  (script :src ui/mz-js)
+  (cell= ui/js)))
 
-  #_(div :class "footer" (cell= (str rpc/loading " " rpc/error)))
+(cell= (apply ui/page-init))
 
-  (script :src ui/mz-js)))
+(rpc/init)

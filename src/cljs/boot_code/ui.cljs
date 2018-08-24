@@ -2,9 +2,9 @@
   (:require-macros
     [javelin.core :refer [defc defc=]])
   (:require
-   [hoplon.core :refer [link header h1 div textarea text br]]
+   [hoplon.core :refer [link header h1 div textarea text br button]]
    [javelin.core :refer [cell]]
-   [paren-soup.core :as ps]))
+   [boot-code.parensoup :as ps]))
 
 
 (def materialize-base "//cdn.muicss.com/mui-0.9.36")
@@ -12,62 +12,29 @@
 (def mz-js (str materialize-base "/js/mui.min.js"))
 
 ;; TODO: Make this work like the map built in codemirror-assets.cljs
-(def materialize {:js (str materialize-base "/js/mui.min.js")
-                  :css (str materialize-base "/css/mui.min.css")})
-
-(def initial-code "(ns code.ui)
-
-(def h hoplon.core)
-(def body hoplon.core.body)
-(def h1 hoplon.core.h1)
-(def p hoplon.core.p)
-
-(def project boot-code.rpc.project)
-(def files (:files @project))
-
-(first files)
-(map #(:full-name %) files)
-
-(def environment {:prod
-                  (fn []
-                    (body
-                      (h1 :class \"foo\" \"Hello page\")))})
-
-(.appendChild (-> js/document .-body) (p \"Hello, world\"))
-
-(name \"foo\")
-
-(-> environment :prod)")
+(def materialize {:minjs (str materialize-base "/js/mui.min.js")
+                  :mincss (str materialize-base "/css/mui.min.css")})
 
 
-(defn parensoup-init [] (ps/init-all))
+(defc root
+  {:dynamic []
+
+   :body (div :class "all-content"
+              (button :click #(ps/activate root) "Clojurescript Notebook"))
+
+   :init (fn [])})
 
 
-(defn init-later [f] (fn []
-                       (js/setTimeout
-                        (fn [] (f))
-                        2000)
-                       ""))
+(defn dynamic [first-key second-key element]
+  (let [c (or (get element first-key) (get element second-key))]
+    (cond
+      (nil? c) []
+      (fn? c)  [(c)]
+      :else    [c])))
 
 
-(defc environment
-  {:prod {:css (link :type "text/css" :rel "stylesheet" :href "http://oakes.github.io/paren-soup/paren-soup-light.css")
+(defc= css (mapcat (partial dynamic :mincss :css) (-> root :dynamic)))
+(defc= body (-> root :body))
+(defc= js (mapcat (partial dynamic :minjs :js) (-> root :dynamic)))
 
-          :body (div :class "all-content"
-                     (header (text "Header"))
-                     (div :class "paren-soup"
-                          (div :class "instarepl")
-                          (div :class "numbers")
-                          (div :class "content" :contenteditable "true" (text initial-code)))
-                     (div))
-
-          :page-init (init-later parensoup-init)}})
-
-
-(defc current :prod)
-
-(defc= css (-> environment current :css))
-
-(defc= body (-> environment current :body))
-
-(defc= page-init (-> environment current :page-init))
+(defc= page-init (-> root :init))

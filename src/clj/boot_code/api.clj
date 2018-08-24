@@ -1,8 +1,24 @@
 (ns boot-code.api
   (:require [castra.core :refer [defrpc *session*]]
             [clojure-watch.core :refer [start-watch]]
-            [clojure.java.io :as io])
+            [clojure.java.io :as io]
+            [clojure.string :as str])
   (:import [java.util Date]))
+
+
+(defn expand-path [p]
+  (let [home (System/getProperty "user.dir")]
+    (if (str/includes? p "~")
+      (str/replace p "~" home)
+      p)))
+
+(def default-repo "~/.fusion")
+
+(defonce config
+  (atom {:boot
+         {:repo default-repo
+          :repo-path (expand-path default-repo)
+          :init-namespace "fusion.init"}}))
 
 
 ;; File path stuff
@@ -38,6 +54,10 @@
     (swap! deltas update-in [:session] @*session*)
     (swap! deltas update-in [:file-changes] (fn [fc] []))
     project-deltas))
+
+
+(defrpc get-config []
+  @config)
 
 
 (defrpc get-project-files []

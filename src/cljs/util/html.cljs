@@ -109,7 +109,7 @@
    (letfn [chain-next [scripts script-cb]])))
 
 
-(defn get-script
+#_(defn get-script
   "Load the specified .js file
 
   script - The script to load.

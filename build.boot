@@ -20,8 +20,7 @@
                  [hoplon/castra             "3.0.0-alpha7"]
                  [hoplon/hoplon             "7.2.0"]
 
-                 [cljsjs/pouchdb            "6.0.4-0"]
-                 [cljsjs/codemirror         "5.24.0-1"]
+                 [replumb                   "0.2.4"]
                  [eval-soup                 "1.4.3"]
                  [paren-soup                "2.12.3"]
 
@@ -47,9 +46,7 @@
 (deftask web-dev
   "Build boot-code for local development."
   []
-  (comp (sift :add-jar {'cljsjs/codemirror #"cljsjs/codemirror/development/codemirror.css"})
-     (sift :move {#"cljsjs/codemirror/development/codemirror.css" "vendor/codemirror/codemirror.css"})
-     (serve
+  (comp (serve
       :port    7000
       :handler 'boot-code.handler/app
       :reload  true)
@@ -63,9 +60,7 @@
 (deftask prod
   "Build boot-code for production deployment."
   []
-  (comp (sift :add-jar {'cljsjs/codemirror #"cljsjs/codemirror/development/codemirror.css"})
-     (sift :move {#"cljsjs/codemirror/development/codemirror.css" "vendor/codemirror/codemirror.css"})
-     (hoplon)
+  (comp (hoplon)
      (cljs :optimizations :advanced)
      (prerender)))
 
@@ -73,9 +68,7 @@
 (deftask make-war
   "Build a war for deployment"
   []
-  (comp (sift :add-jar {'cljsjs/codemirror #"cljsjs/codemirror/development/codemirror.css"})
-     (sift :move {#"cljsjs/codemirror/development/codemirror.css" "vendor/codemirror/codemirror.css"})
-     (hoplon)
+  (comp (hoplon)
      (cljs :optimizations :advanced)
      (uber :as-jars true)
      (web :serve 'sbt_hoplon.handler/app)

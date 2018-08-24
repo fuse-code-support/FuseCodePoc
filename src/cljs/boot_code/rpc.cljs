@@ -8,9 +8,13 @@
 ;; server-pushed-events
 (defc push-events {})
 
+;; Config from the server
+(defc config {})
+
 ;; The current project and the file we're currently loading
 (defc project {:name ""
                :files []})
+
 (defc loading-file {})
 
 ;; Server status messages are placed here
@@ -30,12 +34,14 @@
 
 ;; Server API
 (def refresh-state (mkremote 'boot-code.api/refresh-state push-events error loading))
+(def get-config (mkremote 'boot-code.api/get-config config error loading))
 (def get-project-files (mkremote 'boot-code.api/get-project-files project error loading))
 (def get-file (mkremote 'boot-code.api/get-file loading-file error loading))
 (def save-file (mkremote 'boot-code.api/save-file save-file error loading))
 
 ;; Where everything starts
 (defn init []
+  (get-config)
   (refresh-state)
   (get-project-files)
   (js/setInterval refresh-state 1000))
