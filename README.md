@@ -11,10 +11,12 @@ that happens to implement an awesome programmer's editor and programming environ
 
 ## TODO
 
-* Finish integrating replumb / implementing the main loader in repl.cljs
+* Tech debt immediate cleanup
   * Make the js loader use the job api
   * Only load js that hasn't already been loaded (keep a set of already-loaded-things)
   * :dynamic maps need a :name to display in the job UI
+
+* Finish integrating replumb / implementing the main loader in repl.cljs
 
 * Job API
   * Job name
