@@ -53,7 +53,9 @@
 
 
 (def ps-editor
-  {:dynamic [{:css (link :type "text/css"
+  {:dynamic [{:name "Paren Soup Clojurescript Notebook"
+
+              :css (link :type "text/css"
                          :rel "stylesheet"
                          :href "http://oakes.github.io/paren-soup/paren-soup-light.css")}]
 
