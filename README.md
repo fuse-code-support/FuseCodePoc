@@ -28,7 +28,8 @@ that happens to implement an awesome programmer's editor and programming environ
   * auto-repl displays result in gray beside line; hover shows more; guard against infinite loops
 
 * Edit Scala using CodeMirror
-  * Integrate with Ensime / SBT
+  * Integrate with Ensime / SBT?
+  * Use ScalaFiddle back-end?
   * Will need plugins to be able to extend the back-end
 
 * Edit YAML / OpenAPI using the OpenAPI editor
