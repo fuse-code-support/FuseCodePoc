@@ -25,12 +25,21 @@ that happens to implement an awesome programmer's editor and programming environ
   * Select a file
   * auto-repl displays result in gray beside line; hover shows more; guard against infinite loops
 
+* Edit Scala using CodeMirror
+  * Integrate with Ensime / SBT
+  * Will need plugins to be able to extend the back-end
+
+* Edit YAML / OpenAPI using the OpenAPI editor
+
+* GFMX code notebooks
+
 * UI ideas
   * Splitters.  Ctrl-1, Ctrl-2, Ctrl-3, Ctrl-0 to add and remove.
   * Quick sidebar for things like quick outline, open-file tree, git status, etc.
   * File tree - type to filter
   * Need a way to compress the number of tabs to make manageable?
   * Synchronized editors of same file.  Across multiple tabs/connections.  Displaying remote highlight.
+  * Synchronize the UI too?  (Open tabs / focused tab / more?)
 
 * Refactoring
   * Move everything but bootstrap logic to separate repos as spiked in api.clj
