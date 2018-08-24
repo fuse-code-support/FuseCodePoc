@@ -5,7 +5,7 @@ that happens to implement an awesome programmer's editor and programming environ
 
 * Start with a small kernel that does nothing but bootstrap itself
 * Modular, plugin-based design
-* The program is written in itself
+* The program is written in (and using) itself
 * Coding and program execution happen at the same time
 * Use Lisp, because Lisp is the first and best language that can be evolved in itself
 
