@@ -35,6 +35,8 @@ that happens to implement an awesome programmer's editor and programming environ
 
 * GFMX code notebooks
 
+* JS editing support (use built-in CodeMirror code assist)
+
 * UI ideas
   * Splitters.  Ctrl-1, Ctrl-2, Ctrl-3, Ctrl-0 to add and remove.
   * Quick sidebar for things like quick outline, open-file tree, git status, etc.
