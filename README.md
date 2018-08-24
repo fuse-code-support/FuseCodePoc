@@ -21,6 +21,7 @@ that happens to implement an awesome programmer's editor and programming environ
   * Job description
   * Step number / of? Or vector of step functions where each function accepts a continuation?
   * Root cells: Current step name/description; current step number; total steps in current job; jobs remaining
+  * Run in the background (if possible?) as a progressive web app
 
 * Mechanism to push jobs from back-end to front-end (as noted under Refactoring below)
 
