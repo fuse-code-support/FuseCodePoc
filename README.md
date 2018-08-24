@@ -1,6 +1,6 @@
-# webfusion - The next step after Atom
+# FusionText - The next step after Atom
 
-WebFusion Text is the intersection of a number of good ideas I've encountered over the years
+FusionText is the intersection of a number of good ideas I've encountered over the years
 that happens to implement an awesome programmer's editor and programming environment:
 
 * Start with a small kernel that does nothing but bootstrap itself
@@ -8,6 +8,7 @@ that happens to implement an awesome programmer's editor and programming environ
 * The program is written in (and using) itself
 * Coding and program execution happen at the same time
 * Use Lisp, because Lisp is the first and best language that can be evolved in itself
+* Aggressively reuse existing best-of-breed components
 
 ## TODO
 
@@ -42,6 +43,8 @@ that happens to implement an awesome programmer's editor and programming environ
 
 * JS editing support (use built-in CodeMirror code assist)
 
+* Terminal emulation support https://cdnjs.com/libraries/xterm  (xtermjs)
+
 * UI ideas
   * Splitters.  Ctrl-1, Ctrl-2, Ctrl-3, Ctrl-0 to add and remove.
   * Quick sidebar for things like quick outline, open-file tree, git status, etc.
@@ -49,6 +52,7 @@ that happens to implement an awesome programmer's editor and programming environ
   * Need a way to compress the number of tabs to make manageable?
   * Synchronized editors of same file.  Across multiple tabs/connections.  Displaying remote highlight.
   * Synchronize the UI too?  (Open tabs / focused tab / more?)
+  * Libjitsi / audio & video?
 
 * Refactoring
   * Move everything but bootstrap logic to separate repos as spiked in api.clj
