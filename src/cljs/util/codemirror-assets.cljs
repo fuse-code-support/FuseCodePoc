@@ -177,7 +177,7 @@
 ;; of raw assets
 
 (defn add-new-asset-type [asset-map next-asset dom-fn]
-  (let [updated-asset-code (conj {} dom-fn)
+  (let [updated-asset-code (conj {:name next-asset} dom-fn)
         new-asset-map (conj asset-map [next-asset updated-asset-code])]
     [new-asset-map next-asset]))
 
