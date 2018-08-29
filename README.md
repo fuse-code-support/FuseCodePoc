@@ -52,6 +52,10 @@ that happens to implement an awesome programmer's editor and programming environ
   * Need a way to compress the number of tabs to make manageable?
   * Synchronized editors of same file.  Across multiple tabs/connections.  Displaying remote highlight.
   * Synchronize the UI too?  (Open tabs / focused tab / more?)
+    * UDP Multicast for windows / users finding each other?
+    * https://github.com/ztellman/aleph
+    * https://github.com/ztellman/aleph/issues/276
+    * https://gist.github.com/gomes-work/e90b07192d9cfe6e9a31acd50b6d8b64
   * Libjitsi / audio & video?
 
 * Refactoring
