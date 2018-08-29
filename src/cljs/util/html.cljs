@@ -4,7 +4,9 @@
             [goog.dom.classes :as classes]
             [goog.events :as events]
             [hoplon.core :as h :refer [script link]]
-            [javelin.core :refer [cell]])
+            [javelin.core :refer [cell]]
+
+            [boot-code.jobs :as job :refer [with-blocking]])
   (:require-macros
    [javelin.core :refer [defc defc=]])
   (:import [goog Timer]))
@@ -87,26 +89,29 @@
 ;; https://www.html5rocks.com/en/tutorials/speed/script-loading/
 
 
-(defn get-script
-  ([script-info script-cb final-cb script-number script-total]
-   (let [script-dom-node (cond
-                           (fn? script-info) (script-info)
-                           (vector? script-info) (let [[url sri] script-info]
-                                                   (h/script :src url :integrity sri :crossorigin "anonymous"))
-                           (string? script-info) (h/script :src script-info)
-                           :default              (throw (str "ERROR: Unable to load script: " script-info)))]
-     (set! (.-onload script-dom-node)
-           (fn []
-             (script-cb script-number script-total)
-             (when (= script-number script-total)
-               (final-cb script-number script-total))))
-     (.appendChild (-> js/document .-head) script-dom-node)))
+(defn load-script
+  "Dynamically load a JS file.  script-info can be a nullary function returning a script dom node, a vector
+  of the form [\"url\" \"hash\"] from which a script node will be built, or a string containing a url
+  from which a script node will be built.  When the script is done loading, script-cb will be called.
 
-  ([script-info script-cb]
-   (get-script script-info (fn [a b]) script-cb 1 1))
+  If you want blocking behavior, use this together with jobs/with-blocking."
+  [script-info script-cb]
+  (let [script-dom-node (cond
+                          (fn? script-info) (script-info)
+                          (vector? script-info) (let [[url sri] script-info]
+                                                  (h/script :src url :integrity sri :crossorigin "anonymous"))
+                          (string? script-info) (h/script :src script-info)
+                          :default              (throw (str "ERROR: Unable to load script: " script-info)))]
+    (set! (.-onload script-dom-node) #(script-cb))
+    (.appendChild (-> js/document .-head) script-dom-node)))
 
-  ([scripts script-cb final-cb]
-   (letfn [chain-next [scripts script-cb]])))
+
+(defn load-scripts
+  "Load the specified scripts one after another using job/submit.  job-name is the job name for the UI.
+  script-infos is a sequence of script-info in the format accepted by load-script."
+  [job-name script-infos]
+  (let [loader-fns (map (fn [script-info] (partial load-script script-info)) script-infos)]
+    (job/submit job-name loader-fns)))
 
 
 #_(defn get-script
