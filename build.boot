@@ -21,6 +21,7 @@
                  [hoplon/hoplon             "7.2.0"]
 
                  [replumb                   "0.2.4"]
+                 [clj-jgit                  "0.8.10"]
                  [eval-soup                 "1.4.3"]
                  [paren-soup                "2.12.3"]
 
