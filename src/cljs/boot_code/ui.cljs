@@ -1,28 +1,40 @@
 (ns boot-code.ui
   (:require-macros
-    [javelin.core :refer [defc defc=]])
+    [javelin.core :refer [defc defc= cell=]])
   (:require
-   [hoplon.core :refer [link header h1 div textarea text br button]]
+   [hoplon.core :refer [link header h1 ul li div textarea text p br button]]
    [javelin.core :refer [cell]]
-   [boot-code.parensoup :as ps]))
+
+   [boot-code.jobs :as j]))
 
 
-(def materialize-base "//cdn.muicss.com/mui-0.9.36")
+(def materialize-base "http://cdn.muicss.com/mui-0.9.36")
 (def mz-css (str materialize-base "/css/mui.min.css"))
 (def mz-js (str materialize-base "/js/mui.min.js"))
 
 ;; TODO: Make this work like the map built in codemirror-assets.cljs
-(def materialize {:minjs (str materialize-base "/js/mui.min.js")
+(def materialize {:name "Materialize"
+                  :minjs (str materialize-base "/js/mui.min.js")
                   :mincss (str materialize-base "/css/mui.min.css")})
 
 
+(def default-loader (atom #(js/alert js/console "default-loader not overridden")))
+
+
+;; To replace the main UI, set this cell to your replacement
 (defc root
   {:dynamic []
 
    :body (div :class "all-content"
-              (button :click #(ps/activate root) "Clojurescript Notebook"))
+              (h1 "Fusion Text - The next step in web-based code editing")
+              (p "Initializing, standby...")
+              (ul
+               (li (text "Loading ~{j/current-job-name}"))
+               (li (text "Task #~{j/current-task-number} of ~{j/number-of-tasks}")))
+              (p (button :click #(@default-loader) "Clojurescript Notebook")))
 
    :init (fn [])})
+
 
 
 (defn dynamic [first-key second-key element]

@@ -26,7 +26,7 @@
          [{:name "materialize-light-theme"
            :remote-repo "git@github.com:/coconutpalm/webfusion-mz-light"}
 
-          {:name "webfusion-text"
+          {:name "fusion-text"
            :remote-repo "git@github.com:/coconutpalm/webfusion-text"}]}))
 
 
@@ -67,6 +67,22 @@
 
 (defrpc get-config []
   @config)
+
+
+(defn not-git [f]
+  (not (str/includes? ".git")))
+
+
+(defrpc get-files [root-directory]
+  (try
+    {:root root-directory
+     :name (:short-name (file-details root-directory))
+     :files (->> root-directory
+                 io/file
+                 file-seq
+                 (filter not-git)
+                 (map file-details))}
+    (catch Exception e (.printStackTrace e))))
 
 
 (defrpc get-project-files []

@@ -6,18 +6,24 @@
    [javelin.core :refer [cell]]
    [paren-soup.core :as ps]
 
-   [boot-code.ui :as ui]
-   [boot-code.rpc :as rpc]))
+   [boot-code.ui :as ui]))
 
 (def initial-code "(ns code.ui
   (:require [clojure.string :as s]))
 
 (s/includes? \"ab\" \"~\")
 
+(def j boot-code.jobs)
+
+(defn hi [cont]
+  (cont \"Hello!\"))
+
+(j.run-blocking hi)
+
 (def h hoplon.core)
-(def body hoplon.core.body)
-(def h1 hoplon.core.h1)
-(def p hoplon.core.p)
+(def body hoplon.core/body)
+(def h1 hoplon.core/h1)
+(def p hoplon.core/p)
 
 (def project boot-code.rpc.project)
 (def files (:files @project))
@@ -34,22 +40,13 @@
 
 (name \"foo\")
 
-(def fib-seq
-  ((fn fib [a b]
-     (lazy-seq (cons a (fib b (+ a b)))))
-   0 1))
+(defn- fib-factory [a b]
+     (lazy-seq (cons a (fib-factory b (+ a b)))))
+(def fib-seq (fib-factory 0 1))
 
 (take 20 fib-seq)
 
 (-> environment :prod)")
-
-
-(defn init-later [f]
-  (fn []
-    (js/setTimeout
-     (fn [] (f))
-     2000)
-    ""))
 
 
 (def ps-editor
@@ -65,10 +62,9 @@
                    (div :class "instarepl")
                    (div :class "numbers")
                    (div :class "content" :contenteditable "true" (text initial-code)))
-              (div)
-              (footer (cell= (str (:message rpc/error)))))
+              (div))
 
-   :init (init-later (fn [] (ps/init-all)))})
+   :init #(ps/init-all)})
 
 
 (defn activate [container] (reset! container ps-editor))
