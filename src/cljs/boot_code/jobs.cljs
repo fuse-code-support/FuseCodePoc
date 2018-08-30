@@ -19,12 +19,13 @@
 (defn with-blocking
   "Run (f args), supplying all but the last argument of f, for functions where the last argument of f is the function
   to call with f's result.  Automatically calls f, blocks, captures f's results, and returns a sequence containing
-  the arguments passed to f's continuation function."
+  the arguments passed to f's continuation function.  If nil is the result passed to f's continuation function,
+  \"<<SUCCESS>>\" is returned instead."
   [f & args]
-  (let [pf (apply partial f args)
+  (let [pf (if args (apply partial f args) f)
         continuation (chan)]
     (go
-      (pf (fn [& result] (put! continuation result)))
+      (pf (fn [& result] (put! continuation (or result "<<SUCCESS>>"))))
       (<! continuation))))
 
 
@@ -33,12 +34,13 @@
   (reset! current-task-number 1)
   (reset! number-of-tasks (:initial-size job))
 
-  (let [[task & tasks] (:steps job)]
-    (loop [task tasks]
-      (with-blocking task)
-      (swap! current-task-number inc)
-      (when-not (empty? tasks)
-        (recur [(first tasks) (rest tasks)])))))
+  (doseq [run-task (:steps job)]
+    (with-blocking run-task)
+    (swap! current-task-number inc))
+
+  (reset! current-job-name "")
+  (reset! current-task-number 0)
+  (reset! number-of-tasks 0))
 
 
 (defonce jobs
