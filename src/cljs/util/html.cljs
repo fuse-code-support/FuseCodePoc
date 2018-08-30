@@ -89,6 +89,8 @@
 ;; https://www.html5rocks.com/en/tutorials/speed/script-loading/
 
 
+;; TODO: Don't load the same JS file more than once?
+
 (defn load-script
   "Dynamically load a JS file.  script-info can be a nullary function returning a script dom node, a vector
   of the form [\"url\" \"hash\"] from which a script node will be built, or a string containing a url
@@ -112,34 +114,6 @@
   [job-name script-infos]
   (let [loader-fns (map (fn [script-info] (partial load-script script-info)) script-infos)]
     (job/submit job-name loader-fns)))
-
-
-#_(defn get-script
-  "Load the specified .js file
-
-  script - The script to load.
-  continuation-fn - The function to call when the script is loaded."
-  ([script continuation-fn]
-   (.getScript js/$ (str script) #(js/setTimeout (fn [] (continuation-fn)) 0)))
-  ([script]
-   (get-script script identity)))
-
-
-(defn get-scripts
-  "Use JQuery to load scripts in order.  on-complete is called when all scripts
-  are loaded.
-
-  baseurl is a base URL to apply to the head of each script URL.
-  scripts is a vector of scripts to load.
-  script-complete is called repeatedly when each script is done loading.
-  all-complete is the continuation function to call when scripts are all loaded."
-  [baseurl scripts script-complete all-complete]
-  (if (empty? scripts)
-    (js/setTimeout all-complete 4000)
-    (get-script (str baseurl (first scripts))
-                (fn []
-                  (script-complete (first scripts) (count scripts))
-                  (get-scripts baseurl (rest scripts) all-complete)))))
 
 
 (defn append-child
