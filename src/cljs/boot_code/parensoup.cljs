@@ -6,7 +6,10 @@
    [javelin.core :refer [cell]]
    [paren-soup.core :as ps]
 
-   [boot-code.ui :as ui]))
+   [boot-code.ui :as ui]
+   [util.html :as h]))
+
+(h/html (.-body js/document))
 
 (def initial-code "(ns code.ui
   (:require [clojure.string :as s]))
@@ -18,7 +21,9 @@
 (defn hi [cont]
   (cont \"Hello!\"))
 
-(j.run-blocking hi)
+(j.with-blocking hi)
+
+(def h util.html)
 
 (def h hoplon.core)
 (def body hoplon.core/body)
