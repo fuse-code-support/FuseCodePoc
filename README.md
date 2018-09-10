@@ -1,4 +1,4 @@
-# FusionText - The next step after Atom
+# FusionText - Powerful web-based code editing
 
 FusionText is the intersection of a number of good ideas I've encountered over the years
 that happens to implement an awesome programmer's editor and programming environment:
@@ -13,15 +13,14 @@ that happens to implement an awesome programmer's editor and programming environ
 ## TODO
 
 * Tech debt immediate cleanup
-  * Make the js loader use the job api
+  * Make the js loader use the job api  *DONE*
   * Only load js that hasn't already been loaded (keep a set of already-loaded-things)
-  * :dynamic maps need a :name to display in the job UI
+  * :dynamic maps need a :name to display in the job UI *DONE*
 
 * Finish integrating replumb / implementing the main loader in repl.cljs
 
-* Job API
+* Job API *DONE*
   * Job name
-  * Job description
   * Step number / of? Or vector of step functions where each function accepts a continuation?
   * Root cells: Current step name/description; current step number; total steps in current job; jobs remaining
   * Run in the background (if possible?) as a progressive web app.  Else trigger the next step in a timer event.
@@ -66,7 +65,7 @@ that happens to implement an awesome programmer's editor and programming environ
   * Write default config file if one doesn't already exist
   * Download webfusion-text via git during bootstrap
   * Get the UI up, then download and activate plugins in the background
-    * Push activation jobs from the back-end to the UI via the refresh-state mechanism or similar
+    * Push activation jobs from the back-end to the UI via the refresh-state mechanism or similar *DONE*
     * `git pull` already-downloaded plugins before activating
     * Load everything we can, then display what we couldn't load (and dependencies) if needed
       * Just create an editor buffer in Markdown with the report?
