@@ -1,32 +1,27 @@
 (ns boot-code.ui
   (:require-macros
-    [javelin.core :refer [defc defc= cell=]])
+   [javelin.core :refer [defc defc= cell=]])
   (:require
    [hoplon.core :refer [link header h1 ul li div textarea text p br button]]
    [javelin.core :refer [cell]]
 
-   [boot-code.jobs :as j]))
+   [boot-code.jobs :as j]
+   [util.html :refer [load-scripts]]))
 
-
-(def materialize-base "http://cdn.muicss.com/mui-0.9.36")
-(def mz-css (str materialize-base "/css/mui.min.css"))
-(def mz-js (str materialize-base "/js/mui.min.js"))
-
-;; TODO: Make this work like the map built in codemirror-assets.cljs
-(def materialize {:name "Materialize"
-                  :minjs (str materialize-base "/js/mui.min.js")
-                  :mincss (str materialize-base "/css/mui.min.css")})
 
 
 (def default-loader (atom #(js/alert js/console "default-loader not overridden")))
 
+
+;; To set the tab title, set this cell
+(defc tab-title (text "FusionText"))
 
 ;; To replace the main UI, set this cell to your replacement
 (defc root
   {:dynamic []
 
    :body (div :class "all-content"
-              (h1 "Fusion Text - The next step in web-based code editing")
+              (h1 "Fusion Text - Powerful web-based code editing")
               (p "Initializing, standby...")
               (ul
                (li (text "Loading ~{j/current-job-name}"))
@@ -41,12 +36,14 @@
   (let [c (or (get element first-key) (get element second-key))]
     (cond
       (nil? c) []
-      (fn? c)  [(c)]
-      :else    [c])))
+      (fn? c)  [c]
+      :else    [#(identity c)])))
 
 
-(defc= css (mapcat (partial dynamic :mincss :css) (-> root :dynamic)))
+(defc= css (->> (-> root :dynamic) (mapcat (partial dynamic :mincss :css)) (map apply)))
 (defc= body (-> root :body))
-(defc= js (mapcat (partial dynamic :minjs :js) (-> root :dynamic)))
 
+(defc= js (let [job-name (or (-> root :name) "Loading Javascript")
+                script-infos (mapcat (partial dynamic :minjs :js) (-> root :dynamic))]
+            (load-scripts job-name script-infos)))
 (defc= page-init (-> root :init))

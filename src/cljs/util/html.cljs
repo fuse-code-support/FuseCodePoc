@@ -99,7 +99,7 @@
   If you want blocking behavior, use this together with jobs/with-blocking."
   [script-info script-cb]
   (let [script-dom-node (cond
-                          (fn? script-info) (script-info)
+                          (fn? script-info)     (script-info)
                           (vector? script-info) (let [[url sri] script-info]
                                                   (h/script :src url :integrity sri :crossorigin "anonymous"))
                           (string? script-info) (h/script :src script-info)

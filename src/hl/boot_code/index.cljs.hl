@@ -15,12 +15,6 @@
   ;; Android 5 Chrome color
   (html-meta :name "theme-color" :content "#EE6E73")
 
-  ;; Fonts + Materialize CSS
-  (link :href "https://fonts.googleapis.com/icon?family=Material+Icons" :rel "stylesheet")
-  (link :href "https://fonts.googleapis.com/css?family=Roboto|Inconsolata" :rel "stylesheet" :type "text/css")
-  (link :href "https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css" :rel "stylesheet" :type "text/css")
-  (link :type "text/css" :rel "stylesheet" :href ui/mz-css :media "screen,projection")
-
   ;; Favicons - TODO: Need to actually put some icons in the images folder
   (link :rel "apple-touch-icon-precomposed" :href "images/favicon/apple-touch-icon-152x152.png")
   (html-meta :name "msapplication-TileColor" :content "#FFFFFF")
@@ -30,17 +24,10 @@
   (cell= ui/css)
   (link :href "app.css" :rel "stylesheet")
 
-  (title (text "~{rpc/project-name} ~{rpc/random-number}"))) ; Probably put current project name in the editor
+  (title (cell= ui/tab-title))) ; Probably put current project name in the editor
 
  (body
-  (cell= ui/body)
-
-  (div :class "hiddendiv common")
-  (div :class "drag-target" :data-sidenav "nav-mobile" :style "left:0px ; touch-action:pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0,0,0,0;")
-
-  ;; Materialize JS
-  (script :src ui/mz-js)
-  (cell= ui/js)))
+  (cell= ui/body)))
 
 (cell= (apply ui/page-init))
 

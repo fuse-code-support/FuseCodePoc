@@ -16,6 +16,29 @@
 
 (s/includes? \"ab\" \"~\")
 
+
+(def repl boot-code.repl)
+
+(def result (atom []))
+
+(defn log-results [r]
+  (.log js/console (str r))
+  (reset! result r))
+
+(repl.read-eval ['(+ 5 9 3) '(list 3 2) '(require 'foo.baz)] log-results)
+
+@result
+
+
+(partition 2 [:a 1 :b 3])
+
+(into {} [[:a \"a\"] [:b \"b\"]])
+
+(into {} (map vec (partition 2 [:a 1 :b 3])))
+
+(type (eval (list + 3 2)))
+
+
 (def j boot-code.jobs)
 
 (defn hi [cont]
@@ -72,4 +95,8 @@
    :init #(ps/init-all)})
 
 
-(defn activate [container] (reset! container ps-editor))
+(defn activate [root-container] (reset! root-container ps-editor))
+
+(defn init [root-container] (reset! ui/default-loader #(activate root-container)))
+
+(defonce do-init (partial init ui/root))

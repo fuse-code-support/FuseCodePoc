@@ -2,17 +2,40 @@
   (:require-macros
     [javelin.core :refer [defc defc=]])
   (:require
+   [clojure.string :as str]
    [javelin.core]
    [castra.core :refer [mkremote]]
 
    [boot-code.ui :as ui]
-   [boot-code.parensoup :as ps]))
+   [boot-code.parensoup :as ps]
+
+   [boot-code.repl :as repl]
+   [boot-code.jobs :as job :refer [with-blocking]]))
 
 ;; server-pushed-events
 (defc push-events {})
 
 ;; Config from the server
 (defc config {})
+
+
+(defn load-plugins [plugins]
+  (doseq [plugin plugins]
+    (let [name (:name plugin)
+          init (str "(" (:init plugin) ")")
+          namespace (first (str/split (:init plugin) "/"))
+          loader [(str "(do (require '" namespace ") " init " )")]]
+      (.log js/console (str "loading " name))
+      (job/submit name (partial repl/read-eval loader)))))
+
+
+;; TODO: Compute load order from dependency graph
+(defc= loaded-plugins
+  (let [plugins (-> config :plugins)]
+    (.log js/console (str "Loading plugins: " plugins))
+    (load-plugins plugins)
+    plugins))
+
 
 ;; The results of asking for all files starting at a given root
 (defc files-at {:root ""
@@ -50,7 +73,6 @@
 
 ;; Where everything starts
 (defn init []
-  (reset! ui/default-loader #(ps/activate ui/root))
   (get-config)
   (refresh-state)
   (get-project-files)
