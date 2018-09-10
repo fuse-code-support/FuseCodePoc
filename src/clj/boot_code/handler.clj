@@ -8,14 +8,18 @@
    [ring.middleware.resource       :refer [wrap-resource]]
    [ring.middleware.session        :refer [wrap-session]]
    [ring.middleware.session.cookie :refer [cookie-store]]
-   [ring.util.response             :refer [content-type resource-response]]))
+   [ring.util.response             :refer [content-type resource-response]]
+
+   [boot-code.repl                 :as    repl]))
 
 
 (defroutes app-routes
+  (GET "/require" [namespace :as {}]
+       (repl/fetch-ns namespace))
   (GET "/" req
-    (-> "index.html"
-        (resource-response)
-        (content-type "text/html")))
+       (-> "index.html"
+          (resource-response)
+          (content-type "text/html")))
   (resources "/" {:root ""})
   (not-found (or (io/resource "public/404.html")
                  "Oups! This page doesn't exist! (404 error)")))

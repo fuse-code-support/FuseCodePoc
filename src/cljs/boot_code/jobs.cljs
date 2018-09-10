@@ -52,8 +52,6 @@
     js))
 
 
-;; TODO: A 3-ary version of this that adds a continuation function to be called when the job is done
-
 (defn submit
   "Submit a job.  job-name is a String identifying the job in the UI.  step-fns may either be
   a 1-ary function accepting a continuation function or a vector of these functions."

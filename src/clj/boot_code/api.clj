@@ -20,14 +20,19 @@
           ;; :local-repo-path (str (expand-path default-repo) "/bootstrap")
           :name "bootstrap"
           :remote-repo "git@github.com:/coconutpalm/webfusion-boot"
-          :init "webfusion/boot"}       ; Maybe each repo should have a config naming the init namespace/function
+          :init "fusion/boot"}       ; Maybe each repo should have a config naming the init namespace/function
 
          :plugins
-         [{:name "materialize-light-theme"
-           :remote-repo "git@github.com:/coconutpalm/webfusion-mz-light"}
+         [{:name "Code Notebook"
+           :init "boot-code.parensoup/do-init"}
 
-          {:name "fusion-text"
-           :remote-repo "git@github.com:/coconutpalm/webfusion-text"}]}))
+          {:name "Workbench"
+           :remote-repo "git@github.com:/coconutpalm/webfusion-mz-light"
+           :init "fusion.workbench.ui/activate"}
+
+          {:name "CodeMirror Editor"
+           :remote-repo "git@github.com:/coconutpalm/webfusion-text"
+           :init "fusion.editor.ui/activate"}]}))
 
 
 ;; File path stuff
