@@ -1,8 +1,11 @@
 (ns boot-code.repl
   (:import goog.net.XhrIo)
   (:require
-   [clojure.string :as str]
+   #_[boot-code.jobs :refer [with-blocking]]
+   #_[replumb.core :as replumb]
    [eval-soup.core :refer [code->results]]
+
+   [clojure.string :as str]
    [clojure.pprint :as p]))
 
 
@@ -55,9 +58,47 @@
      (cb {:lang :clj :source ""}))))
 
 
+#_(defn fetch-file!
+  "Very simple implementation of XMLHttpRequests that given a file path
+  calls src-cb with the string fetched of nil in case of error.
+  See doc at https://developers.google.com/closure/library/docs/xhrio"
+  [file-url src-cb]
+  (try
+    (.send XhrIo (str load-endpoint file-url)
+           (fn [e]
+             (if (.isSuccess (.-target e))
+               (src-cb (.. e -target getResponseText))
+               (src-cb nil))))
+    (catch :default e
+      (src-cb nil))))
+
+
 (def default-repl-options
   {:timeout 10000
    :custom-load ns-load!})
+
+#_(def default-repl-options
+  (merge (replumb/options :browser ["boot_code" "fusion" "util"] fetch-file!)
+         {:no-pr-str-on-value true}))
+
+
+#_(defn form-fn [options form] (fn [cb] (replumb/read-eval-call options cb form)))
+
+
+#_(defn read-eval
+  "Evaluate forms, calling callback when results are ready.  If present, opts is a map :key value
+  matching the options accepted by replumb/read-eval-call.  If any keys in opts are the same
+  as default repl options, the passed opts will override the default-repl-options."
+  ([forms callback]
+   (read-eval nil forms callback))
+
+  ([opts forms callback]
+   (let [options (if opts (into default-repl-options (vec opts)) default-repl-options)
+         job-fns (cond
+                   (seq? forms) (map (partial form-fn options) forms)
+                   :else        [(form-fn options forms)])
+         results (map (fn [eval-form] (with-blocking eval-form)))]
+     (callback results))))
 
 
 (defn read-eval
