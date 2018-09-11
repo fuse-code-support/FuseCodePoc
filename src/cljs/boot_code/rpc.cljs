@@ -24,7 +24,7 @@
     (let [name (:name plugin)
           init (str "(" (:init plugin) ")")
           namespace (first (str/split (:init plugin) "/"))
-          loader [(str "(do (require '" namespace ") " init " )")]]
+          loader [(str "(require '" namespace ") ") init]]
       (.log js/console (str "loading " name))
       (job/submit name (partial repl/read-eval loader)))))
 
