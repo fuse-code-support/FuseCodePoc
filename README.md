@@ -71,6 +71,13 @@ that happens to implement an awesome programmer's editor and programming environ
       * Just create an editor buffer in Markdown with the report?
     * Support Javascript-based plugins?
 
+* Loader - See https://adzerk.com/blog/2017/02/faster-clojure-metadevelopment-with-boot/
+  * Create standard ~/.fusion directory if needed and add standard config file
+  * Allow to overload the standard ~/.fusion dirname on command line
+  * Clone/pull bootstrap repo defined in config
+  * (boot/load-file "${FUSION_DIR}/${BOOTSTRAP_PROJ}/build.boot")
+  * (boot/boot web-dev)
+  * Find a way to bridge this to SBT
 
 ## License
 
