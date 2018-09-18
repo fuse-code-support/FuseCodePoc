@@ -43,7 +43,7 @@
    (if-let [extension (first extensions)]
      (try
        (let [endpoint (str load-endpoint (:path opts) extension)]
-         (.log js/console (str "[ns-load!] " endpoint opts))
+         (.log js/console (str "[ns-load!] " endpoint " " opts))
          (.send XhrIo
                 endpoint
                 (fn [e]

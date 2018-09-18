@@ -2,50 +2,9 @@
   (:require [castra.core :refer [defrpc *session*]]
             [clojure-watch.core :refer [start-watch]]
             [clojure.java.io :as io]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [boot-core.plugins :as plugin])
   (:import [java.util Date]))
-
-
-(defn expand-path [p]
-  (let [home (System/getProperty "user.dir")]
-    (if (str/includes? p "~")
-      (str/replace p "~" home)
-      p)))
-
-(def default-repo "~/.fusion")
-
-(defonce config
-  (atom {:boot
-         {;; :local-repo (str default-repo "/bootstrap")
-          ;; :local-repo-path (str (expand-path default-repo) "/bootstrap")
-          :name "bootstrap"
-          :remote-repo "git@github.com:/coconutpalm/webfusion-boot"
-          :init "fusion/boot"}       ; Maybe each repo should have a config naming the init namespace/function
-
-         :plugins
-         [{:name "Code Notebook"
-           :init "boot-code.parensoup/do-init"}
-
-          {:name "Workbench"
-           :remote-repo "git@github.com:/coconutpalm/webfusion-mz-light"
-           :init "fusion.workbench.ui/activate"}
-
-          {:name "CodeMirror Editor"
-           :remote-repo "git@github.com:/coconutpalm/webfusion-text"
-           :init "fusion.editor.ui/activate"}]}))
-
-
-;; File path stuff
-
-(defn full-path [relative-path] (.getCanonicalPath (io/file relative-path)))
-
-(defn file-details [fileOrName]
-  (let [f (if (string? fileOrName) (io/file fileOrName) fileOrName)]
-    {:full-name (.getCanonicalPath f)
-     :short-name (.getName f)
-     :directory (.isDirectory f)
-     :hidden (.isHidden f)
-     :last-modified-millis (.lastModified f)}))
 
 
 ;; Project metadata
@@ -71,7 +30,7 @@
 
 
 (defrpc get-config []
-  @config)
+  @plugin/config)
 
 
 (defn not-git [f]
