@@ -82,33 +82,35 @@ that happens to implement an awesome programmer's editor and programming environ
 ## Reference
 
 ### Clojure
-EDN hack  https://stackoverflow.com/questions/15234880/how-to-use-clojure-edn-read-to-get-a-sequence-of-objects-in-a-file
-Foundation https://github.com/coconutpalm/clj-foundation/blob/master/src/clj_foundation/patterns.clj
-Specs https://clojure.org/guides/spec
-Orchestra https://github.com/jeaye/orchestra
-clojure.test https://clojure.github.io/clojure/clojure.test-api.html
+* EDN hack  https://stackoverflow.com/questions/15234880/how-to-use-clojure-edn-read-to-get-a-sequence-of-objects-in-a-file
+* Foundation https://github.com/coconutpalm/clj-foundation/blob/master/src/clj_foundation/patterns.clj
+* Specs https://clojure.org/guides/spec
+* Orchestra https://github.com/jeaye/orchestra
+* clojure.test https://clojure.github.io/clojure/clojure.test-api.html
 
 
 ### Clojurescript
-https://github.com/swannodette?page=3&tab=repositories
-https://github.com/arichiardi?tab=repositories
+* https://github.com/swannodette?page=3&tab=repositories
+* https://github.com/arichiardi?tab=repositories
 
 
 ### Codemirror, general js libraries
-Change fn to λ, etc. https://github.com/creationix/tedit/blob/master/src-minimal/ui/code-mirror-editor.js
-hterm, ssh in js https://chromium.googlesource.com/apps/libapps/
+* Change fn to λ, etc. https://github.com/creationix/tedit/blob/master/src-minimal/ui/code-mirror-editor.js
+* hterm, ssh in js https://chromium.googlesource.com/apps/libapps/
 
 
 ### Git
-https://github.com/clj-jgit/clj-jgit
-https://gist.github.com/arichiardi/370fda3d3f597e5379725a29a2ba8779
+#### Clojure
+* https://github.com/clj-jgit/clj-jgit
+* https://gist.github.com/arichiardi/370fda3d3f597e5379725a29a2ba8779
 
-https://github.com/isomorphic-git/isomorphic-git
-https://isomorphic-git.org/docs/en/browser
+#### JS
+* https://github.com/isomorphic-git/isomorphic-git
+* https://isomorphic-git.org/docs/en/browser
 
 
 ### Boot
-https://adzerk.com/blog/2017/02/faster-clojure-metadevelopment-with-boot/
+* https://adzerk.com/blog/2017/02/faster-clojure-metadevelopment-with-boot/
 
 
 
