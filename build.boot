@@ -19,10 +19,11 @@
  :dependencies '[[coconutpalm/boot-boot     "LATEST"]
                  [clojure-watch             "LATEST"]
                  [adzerk/boot-cljs          "2.1.4"]
-                 [adzerk/boot-reload        "0.5.2"]
+                 [adzerk/boot-reload        "0.6.0"]
                  [compojure                 "1.6.1"]
                  [hoplon/castra             "3.0.0-alpha7"]
                  [hoplon/hoplon             "7.2.0"]
+                 [hoplon/javelin            "3.9.0"]
 
                  [clj-jgit                  "0.8.10"]
                  [eval-soup                 "1.4.3"]
