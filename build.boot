@@ -11,6 +11,10 @@
    :test-sources "test"
    :test-resources nil})
 
+
+(defn qualify [path] (str (System/getProperty "user.dir") "/" path))
+
+
 (set-env!
  :dependencies '[[coconutpalm/boot-boot     "LATEST"]
                  [clojure-watch             "LATEST"]
@@ -29,8 +33,8 @@
                  [ring/ring-defaults        "0.3.2"]]
 
 
- :resource-paths #{"resources" "src/clj"}
- :source-paths   #{"src/cljs" "src/hl"})
+ :resource-paths #{(qualify "resources") (qualify "src/clj")}
+ :source-paths   #{(qualify "src/cljs") (qualify "src/hl")})
 
 
 (require
