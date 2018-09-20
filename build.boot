@@ -12,7 +12,7 @@
    :test-resources nil})
 
 (set-env!
- :dependencies '[[coconutpalm/boot-boot     "LATEST" :scope "test"]
+ :dependencies '[[coconutpalm/boot-boot     "LATEST"]
                  [clojure-watch             "LATEST"]
                  [adzerk/boot-cljs          "2.1.4"]
                  [adzerk/boot-reload        "0.5.2"]
