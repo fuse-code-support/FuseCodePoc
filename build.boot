@@ -29,7 +29,6 @@
                  [paren-soup                "2.12.3"]
 
                  [org.clojure/clojurescript "1.10.238"]
-                 [adzerk/boot-cljs-repl     "0.3.3"]
                  [ring/ring-defaults        "0.3.2"]]
 
 
@@ -58,15 +57,14 @@
      (cljs)))
 
 
-(deftask prod
+#_(deftask prod
   "Build boot-code for production deployment."
   []
   (comp (hoplon)
-     (cljs :optimizations :advanced)
-     (prerender)))
+     (cljs :optimizations :advanced)))
 
 
-(deftask make-war
+#_(deftask make-war
   "Build a war for deployment"
   []
   (comp (hoplon)
