@@ -3,7 +3,8 @@
             [clojure-watch.core :refer [start-watch]]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [boot-core.plugins :as plugin])
+            [boot-code.plugins :as plugin]
+            [boot-code.io :refer [full-path file-details]])
   (:import [java.util Date]))
 
 

@@ -116,6 +116,6 @@ that happens to implement an awesome programmer's editor and programming environ
 
 ## License
 
-Eclipse Public License, Version 1.0 or later
+Eclipse Public License, either version 1.0 or (at your option) any later version.
 
-Copyright © 2017,2018 by David Orme
+Copyright © 2017-2018 by David Orme

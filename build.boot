@@ -26,11 +26,8 @@
 
                  [org.clojure/clojurescript "1.10.238"]
                  [adzerk/boot-cljs-repl     "0.3.3"]
-                 [ring/ring-defaults        "0.3.2"]
+                 [ring/ring-defaults        "0.3.2"]]
 
-                 [cider/piggieback          "0.3.6"  :scope "test"]
-                 [weasel                    "0.7.0"  :scope "test"]
-                 [org.clojure/tools.nrepl   "0.2.13" :scope "test"]]
 
  :resource-paths #{"resources" "src/clj"}
  :source-paths   #{"src/cljs" "src/hl"})
