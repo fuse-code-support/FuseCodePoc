@@ -16,7 +16,9 @@
 
 
 (set-env!
- :dependencies '[[coconutpalm/boot-boot     "LATEST"]
+ :dependencies '[[org.clojure/clojure        "1.9.0"]
+
+                 [coconutpalm/boot-boot     "LATEST"]
                  [clojure-watch             "LATEST"]
                  [adzerk/boot-cljs          "2.1.4"]
                  [adzerk/boot-reload        "0.6.0"]
