@@ -60,19 +60,46 @@
      (cljs)))
 
 
-#_(deftask prod
-  "Build boot-code for production deployment."
-  []
-  (comp (hoplon)
-     (cljs :optimizations :advanced)))
+;; WIP!!!
+#_(deftask isolated
+    "Run task requiring dependencies in its own pod"
+    [dependencies task & args]
+    (fn []
+      (pod/make-pod
+         (update-in (b/get-env)
+                    [:dependencies]
+                    (identity [(dep "org.clojure/clojure" "1.9.0")
+                               (dep "boot/core" (:boot-clj-version @config/settings))
+                               (dep "boot/pod" (:boot-clj-version @config/settings))
+                               (dep "boot/worker" (:boot-clj-version @config/settings))])))))
 
 
-#_(deftask make-war
-  "Build a war for deployment"
-  []
-  (comp (hoplon)
-     (cljs :optimizations :advanced)
-     (uber :as-jars true)
-     (web :serve 'sbt_hoplon.handler/app)
-     (war)
-     (target :dir #{"target"})))
+;; This is specialized for launching via fusion-boot only
+;;
+;; We have to do this explicitly because 'boot --file something.boot a-task' does not
+;; launch a-task but instead loads something.boot, then attempts to call -main with
+;; "a-task" as an argument.
+(defn -main [& args]
+  (letfn [(poll-reload []
+            (let [f (java.io.File. "build.boot")]
+              (loop [mtime (.lastModified f)]
+                (let [new-mtime (.lastModified f)]
+                  (when (> new-mtime mtime)
+                    (load-file (.getCanonicalPath f)))
+                  (Thread/sleep 1000)
+                  (recur new-mtime)))))
+
+          (run-task [task-name]
+            (require '[clojure.tools.reader :refer [read-string]])
+
+            (let [launch-command (str "(boot (" task-name "))")
+                  form           (read-string launch-command)
+                  reloader       (Thread. poll-reload)]
+              (.setDaemon reloader true)
+              (.start reloader)
+              (eval form)))]
+
+    (cond
+      (> (count args) 1) (println "Usage: build.boot <task-name>")
+      (= (count args) 1) (run-task (first args))
+      :else              (println "No task specified.  Usage: build.boot <task-name>"))))
