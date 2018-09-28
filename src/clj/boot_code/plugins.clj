@@ -13,12 +13,12 @@
           :init "fusion/boot"}       ; Maybe each repo should have a config naming the init namespace/function
 
          :plugins
-         [{:name "Code Notebook"
+         [#_{:name "Code Notebook"
            :init "boot-code.parensoup/do-init"}
 
           {:name "Workbench"
            :remote-repo "git@github.com:/coconutpalm/fusion-mz-light"
-           :init "fusion.workbench.ui/activate"}
+           :init "fusion.workbench.ui/do-init"}
 
           {:name "CodeMirror Editor"
            :remote-repo "git@github.com:/coconutpalm/fusion-cm"

@@ -26,7 +26,9 @@
           namespace (first (str/split (:init plugin) "/"))
           loader [(str "(require '" namespace ") ") init]]
       (.log js/console (str "loading " name))
-      (job/submit name (partial repl/read-eval loader)))))
+      (job/submit name
+                  [(partial repl/read-eval loader)
+                   (partial repl/read-eval init)]))))
 
 
 ;; TODO: Compute load order from dependency graph

@@ -2,7 +2,8 @@
       (:require
        [javelin.core :as j :refer [cell cell=]]
        [boot-code.rpc :as rpc]
-       [boot-code.ui :as ui]))
+       [boot-code.ui :as ui]
+       [fusion.workbench.ui :as w]))
 
 (html
  (head
@@ -21,14 +22,17 @@
   (html-meta :name "msapplication-TileImage" :content "images/favicon/mstile-144x144.png")
   (link :rel "icon" :href "images/favicon/favicon-32x32.png" :sizes "32x32")
 
+  (link :rel "stylesheet" :href "app.css")
   (cell= ui/css)
   (link :href "app.css" :rel "stylesheet")
 
   (title (cell= ui/tab-title))) ; Probably put current project name in the editor
 
  (body
-  (cell= ui/body)))
+  (div :id "outer"
+       (cell= ui/body))))
 
 (cell= (apply ui/page-init))
 
 (rpc/init)
+(w/activate ui/root)
