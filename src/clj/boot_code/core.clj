@@ -1,7 +1,8 @@
 (ns boot-code.core
   (:require
-   [boot-code.handler          :as handler]
-   [ring.adapter.jetty         :refer [run-jetty]]))
+   [boot-code.handler  :as handler]
+   [ring.adapter.jetty :refer [run-jetty]]))
+
 
 (def server (atom nil))
 
