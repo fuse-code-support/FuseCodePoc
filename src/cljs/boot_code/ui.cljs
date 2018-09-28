@@ -9,7 +9,6 @@
    [util.html :refer [load-scripts]]))
 
 
-
 (def default-loader (atom #(js/alert js/console "default-loader not overridden")))
 
 
@@ -29,7 +28,6 @@
               (p (button :click #(@default-loader) "Clojurescript Notebook")))
 
    :init (fn [])})
-
 
 
 (defn dynamic [first-key second-key element]
