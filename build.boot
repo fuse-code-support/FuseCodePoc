@@ -46,10 +46,25 @@
   '[pandeiro.boot-http    :refer [serve]])
 
 
+(deftask cider "CIDER profile"
+   []
+   (require 'boot.repl)
+   (swap! @(resolve 'boot.repl/*default-dependencies*)
+          concat '[[org.clojure/tools.nrepl "0.2.13"]
+                   [cider/cider-nrepl "0.18.0"]
+                   [refactor-nrepl "2.4.0"]])
+   (swap! @(resolve 'boot.repl/*default-middleware*)
+          concat '[cider.nrepl/cider-middleware
+                   refactor-nrepl.middleware/wrap-refactor])
+   identity)
+
+
 (deftask web-dev
   "Build boot-code for local development."
   []
-  (comp (serve
+  (comp
+    (cider)
+    (serve
       :port    7000
       :handler 'boot-code.handler/app
       :reload  true)
@@ -57,6 +72,7 @@
      (speak)
      (hoplon)
      (reload)
+     (repl :server true)
      (cljs)))
 
 
@@ -81,7 +97,7 @@
 ;; "a-task" as an argument.
 (defn -main [& args]
   (letfn [(poll-reload []
-            (let [f (java.io.File. "build.boot")]
+            (let [f (java.io.File. "./build.boot")]
               (loop [mtime (.lastModified f)]
                 (let [new-mtime (.lastModified f)]
                   (when (> new-mtime mtime)
@@ -95,8 +111,10 @@
             (let [launch-command (str "(boot (" task-name "))")
                   form           (read-string launch-command)
                   reloader       (Thread. poll-reload)]
+
               (.setDaemon reloader true)
               (.start reloader)
+
               (eval form)))]
 
     (cond
