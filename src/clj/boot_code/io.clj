@@ -6,7 +6,7 @@
 ;; File path stuff
 
 (defn expand-path [p]
-  (let [home (System/getProperty "user.dir")]
+  (let [home (System/getProperty "user.home")]
     (if (str/includes? p "~")
       (str/replace p "~" home)
       p)))
