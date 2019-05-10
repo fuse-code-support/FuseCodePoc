@@ -28,9 +28,7 @@
 
   (title (cell= ui/tab-title))) ; Probably put current project name in the editor
 
- (body
-  (div :id "outer"
-       (cell= ui/body))))
+ (body (cell= ui/body)))
 
 (cell= (apply ui/page-init))
 
