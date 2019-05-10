@@ -8,6 +8,16 @@ html, body, #outer {
 body {
     font-variant-ligatures: contextual;
     font-feature-settings: "calt" 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+.content-container {
+  flex: 1 0 auto;
+  padding-top: 1vh;
+  width: 100%;
 }
 
 h1 {
