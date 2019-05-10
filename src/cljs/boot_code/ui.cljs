@@ -13,14 +13,14 @@
 
 
 ;; To set the tab title, set this cell
-(defc tab-title (text "FusionText"))
+(defc tab-title (text "FuseCode"))
 
 ;; To replace the main UI, set this cell to your replacement
 (defc root
   {:dynamic []
 
    :body (div :class "all-content"
-              (h1 "Fusion Text - Powerful web-based code editing")
+              (h1 "FuseCode - Browser-based code editing implemented in itself")
               (p "Initializing, standby...")
               (ul
                (li (text "Loading ~{j/current-job-name}"))

@@ -1,4 +1,4 @@
-(ns fusion.editor.ui
+(ns fusecode.editor.ui
   (:require-macros
     [javelin.core :refer [defc defc= cell=]])
   (:require

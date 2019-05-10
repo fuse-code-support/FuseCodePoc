@@ -1,4 +1,4 @@
-(ns fusion.workbench.ui
+(ns fusecode.workbench.ui
   (:require-macros
     [javelin.core :refer [defc defc= cell=]])
   (:require
@@ -71,29 +71,24 @@
              {:name "Material icons"
               :css (link :href "https://fonts.googleapis.com/icon?family=Material+Icons" :rel "stylesheet" :type "text/css")}
              {:name "Google fonts"
-              :css (link :href "https://fonts.googleapis.com/css?family=Noto+Sans+JP|Noto+Serif+JP|IBM+Plex+Mono|Roboto+Mono" :rel "stylesheet" :type "text/css")}
+              :css (link :href "https://fonts.googleapis.com/css?family=Noto+Mono+JP|Noto+Sans+JP|Noto+Serif+JP|IBM+Plex+Mono|Roboto+Mono" :rel "stylesheet" :type "text/css")}
              {:name "Fira Code font"
               :css (link :href "https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css" :rel "stylesheet" :type "text/css")}]
 
-   :body [(div :id "inner_fixed" :class "navbar-fixed"
+   :body [(div :class "navbar-fixed"
                (nav :class (cell= (str inverse " z-depth-2")) :role "navigation"
                     (div :class "nav-wrapper"
                          (div :class "row"
                               (div :class "col s12 padding-left: 1em;"
                                    (a :id "logo-container" :href "#" :class "right brand-logo" (text logo-text))
                                    (ul :class "hide-on-med-and-down"
-                                       (li :class "active" (a :class (cell= inverse-text) :href "#" "Fusion"))
+                                       (li :class "active" (a :class (cell= inverse-text) :href "#" "FuseCode"))
                                        (li (a :class (cell= inverse-text) :href "#" "Untitled Workspace")))
 
                                    (ul :id "nav-mobile" :class "sidenav" (li (a :class (cell= inverse-text) :href "#" "Navbar Link")))
                                    (a :href "#" :data-target "nav-mobile" :class "sidenav-trigger" (i :class "material-icons" "menu")))))))
-          (div :id "inner_remaining"
-               (div ))]
-   #_(div :class "all-content"
-          (header (text "Fusion ~{task-info}"))
-          (cell= main-window-content)
-          (div :class "hiddendiv common")
-          (div :class "drag-target" :data-sidenav "nav-mobile" :style "left:0px ; touch-action:pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0,0,0,0;"))
+
+          (textarea :class "content-container" "Hello")]
 
    :init (fn [])})
 

@@ -3,7 +3,7 @@
        [javelin.core :as j :refer [cell cell=]]
        [boot-code.rpc :as rpc]
        [boot-code.ui :as ui]
-       [fusion.workbench.ui :as w]))
+       [fusecode.workbench.ui :as w]))
 
 (html
  (head
