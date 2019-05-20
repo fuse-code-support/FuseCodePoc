@@ -1,12 +1,12 @@
 (def task-options
-  {:project 'coconutpalm/boot-code
+  {:project 'coconutpalm/fusecode-bootstrap-poc
    :version "0.1.1"
-   :project-name "boot-code"
+   :project-name "Bootstrap FuseCode--POC"
    :project-openness :open-source
 
-   :description "A programmers' editor intended to be embedded inside of build tools."
+   :description "A programmers' editor intended to be embedded inside of build tools.  Bootstrap plugin (POC)."
 
-   :scm-url "https://github.com/coconutpalm/boot-code"
+   :scm-url "https://github.com/fusecode"
 
    :test-sources "test"
    :test-resources nil})
@@ -42,7 +42,7 @@
 (require
   '[adzerk.boot-cljs      :refer [cljs]]
   '[adzerk.boot-reload    :refer [reload]]
-  '[hoplon.boot-hoplon    :refer [hoplon prerender]]
+  '[hoplon.boot-hoplon    :refer [hoplon]]
   '[pandeiro.boot-http    :refer [serve]])
 
 
@@ -50,8 +50,8 @@
    []
    (require 'boot.repl)
    (swap! @(resolve 'boot.repl/*default-dependencies*)
-          concat '[[org.clojure/tools.nrepl "0.2.13"]
-                   [cider/cider-nrepl "0.18.0"]
+          concat '[[nrepl/nrepl "0.6.0"]
+                   [cider/cider-nrepl "0.21.1"]
                    [refactor-nrepl "2.4.0"]])
    (swap! @(resolve 'boot.repl/*default-middleware*)
           concat '[cider.nrepl/cider-middleware
@@ -90,7 +90,7 @@
                                (dep "boot/worker" (:boot-clj-version @config/settings))])))))
 
 
-;; This is specialized for launching via fusion-boot only
+;; This is specialized for launching via fusecode-boot only
 ;;
 ;; We have to do this explicitly because 'boot --file something.boot a-task' does not
 ;; launch a-task but instead loads something.boot, then attempts to call -main with
