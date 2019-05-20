@@ -3,6 +3,7 @@
    [javelin.core :refer [defc defc=]])
   (:require
    [util.html :as html]
+   [util.codemirror-assets :as assets]
    [hoplon.core :as h :refer [script link]]
    [javelin.core :refer [cell]]
    [castra.core :refer [mkremote]]))
