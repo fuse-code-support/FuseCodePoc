@@ -17,8 +17,8 @@
 
 
 (defn with-blocking
-  "Run (f args), supplying all but the last argument of f, for functions where the last argument of f is the function
-  to call with f's result.  Automatically calls f, blocks, captures f's results, and returns a sequence containing
+  "Run (f args), supplying all but the last argument of f (for functions where the last argument of f is the function
+  to call with f's result).  Automatically calls f, blocks, captures f's results, and returns a sequence containing
   the arguments passed to f's continuation function.  If nil is the result passed to f's continuation function,
   \"<<SUCCESS>>\" is returned instead."
   [f & args]
