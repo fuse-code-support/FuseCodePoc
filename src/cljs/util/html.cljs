@@ -3,6 +3,7 @@
   (:require [goog.dom :as dom]
             [goog.dom.classes :as classes]
             [goog.events :as events]
+            [clojure.string :as str]
             [hoplon.core :as h :refer [script link]]
             [javelin.core :refer [cell]]
 
@@ -66,16 +67,77 @@
   (set! (-> js/document .-body .-style .-zIndex) 1))
 
 
+(defn append-child
+  "Add child-node as a child of parent-node.  child-node may be a single dom node or
+  a seq of dom nodes to be added."
+  [parent-node child-node]
+  (if (seq? child-node)
+    (do (dom/appendChild parent-node (first child-node))
+        (append-child parent-node (rest child-node)))
+    (dom/appendChild parent-node child-node)))
+
 
 (defn html
-  "Return the html inside the specified dom node."
-  [dom] (. dom -innerHTML))
+  "Return the html dom node itself or the html inside the specified dom node if present."
+  [dom]
+  (if dom
+    (. dom -innerHTML)
+    (.-html js/document)))
+
+
+(defn head
+  "Return the head dom node"
+  []  (.-head js/document))
 
 
 (defn set-html!
   "Set the html inside the specified dom node."
   [dom content]
   (set! (. dom -innerHTML) content))
+
+
+
+(defn css
+  #_([url]
+   (let [sri (get raw-assets asset)]
+     (if (and url sri)
+       (css url sri)
+       (fn [] (link :rel "stylesheet" :href url)))))
+  ([url sri]
+   (fn [] (link :rel "stylesheet" :href url :integrity sri :crossorigin "anonymous"))))
+
+
+(defn js
+  #_([url]
+   (let [sri (get raw-assets asset)]
+     (if (and url sri)
+       (js url sri)
+       (fn [] (script :src url)))))
+  ([url sri]
+   (fn [] (script :src url :integrity sri :crossorigin "anonymous"))))
+
+
+(defn asset->dom-fn
+  "For a given asset: build a fn that will create a DOM node to load that asset"
+  [url sri]
+  (cond
+    (str/ends-with? url ".min.js") [:minjs (js url sri)]
+    (str/ends-with? url ".js")  [:js (js url sri)]
+    (str/ends-with? url ".min.css") [:mincss (css url sri)]
+    (str/ends-with? url ".css") [:css (css url sri)]
+    :default [:error url]))
+
+
+(defn- stylesheet [path] (link :rel "stylesheet" :href path))
+
+
+(defn load-css
+  [stylesheets]
+  (let [head (head)]
+    (if (sequential? stylesheets)
+      (doseq [s stylesheets]
+        (append-child head (stylesheet s)))
+      (append-child head (stylesheet stylesheets)))))
 
 
 ;; Better:
@@ -114,13 +176,3 @@
   [job-name script-infos]
   (let [loader-fns (map (fn [script-info] (partial load-script script-info)) script-infos)]
     (job/submit job-name loader-fns)))
-
-
-(defn append-child
-  "Add child-node as a child of parent-node.  child-node may be a single dom node or
-  a seq of dom nodes to be added."
-  [parent-node child-node]
-  (if (seq? child-node)
-    (do (dom/appendChild parent-node (first child-node))
-        (append-child parent-node (rest child-node)))
-    (dom/appendChild parent-node child-node)))
