@@ -1,6 +1,7 @@
 (ns util.codemirror-assets
   (:require
    [hoplon.core :as h :refer [script link]]
+   [util.html :as html]
    [clojure.string :as str]))
 
 
@@ -515,39 +516,6 @@
 (defn url [asset] (str cdn-base asset-url))
 
 
-(defn css
-  ([asset]
-   (let [url (url asset)
-         sri (get raw-assets asset)]
-     (if (and url sri)
-       (css url sri)
-       (fn [] (link :rel "stylesheet" :href url)))))
-  ([url sri]
-   (fn [] (link :rel "stylesheet" :href url :integrity sri :crossorigin "anonymous"))))
-
-
-(defn js
-  ([asset]
-   (let [url (url asset)
-         sri (get raw-assets asset)]
-     (if (and url sri)
-       (js url sri)
-       (fn [] (script :src url)))))
-  ([url sri]
-   (fn [] (script :src url :integrity sri :crossorigin "anonymous"))))
-
-
-(defn asset->dom-fn
-  "For a given asset: build a fn that will create a DOM node to load that asset"
-  [asset sri]
-  (cond
-    (str/ends-with? asset ".min.js") [:minjs (js (url asset) sri)]
-    (str/ends-with? asset ".js")  [:js (js (url asset) sri)]
-    (str/ends-with? asset ".min.css") [:mincss (css (url asset) sri)]
-    (str/ends-with? asset ".css") [:css (css (url asset) sri)]
-    :default [:error asset]))
-
-
 (defn split-path [p] (str/split p "/"))
 (defn split-file [f] (str/split f "."))
 
@@ -580,7 +548,7 @@
 
 (defn compute-asset-map [[asset-map last-asset] [asset-path sri]]
   (let [next-asset (asset-name asset-path)
-        dom-fn (asset->dom-fn asset-path sri)]
+        dom-fn (html/asset->dom-fn (url asset-path sri))]
     (if (= last-asset next-asset)
       (add-asset-to-asset-type asset-map next-asset dom-fn)
       (add-new-asset-type asset-map next-asset dom-fn))))
