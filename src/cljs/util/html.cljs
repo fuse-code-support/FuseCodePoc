@@ -71,7 +71,7 @@
   "Add child-node as a child of parent-node.  child-node may be a single dom node or
   a seq of dom nodes to be added."
   [parent-node child-node]
-  (if (seq? child-node)
+  (if (sequential? child-node)
     (do (dom/appendChild parent-node (first child-node))
         (append-child parent-node (rest child-node)))
     (dom/appendChild parent-node child-node)))
@@ -85,9 +85,13 @@
     (.-html js/document)))
 
 
-(defn head
-  "Return the head dom node"
-  []  (.-head js/document))
+(defn head!
+  "Return the head dom node.  If subnodes are specified, add them to the head node."
+  [& subnodes]
+  (let [h (.-head js/document)]
+    (if subnodes
+      (append-child h subnodes))
+    h))
 
 
 (defn set-html!
@@ -98,21 +102,15 @@
 
 
 (defn css
-  #_([url]
-   (let [sri (get raw-assets asset)]
-     (if (and url sri)
-       (css url sri)
-       (fn [] (link :rel "stylesheet" :href url)))))
+  ([url]
+   (fn [] (link :rel "stylesheet" :href url)))
   ([url sri]
    (fn [] (link :rel "stylesheet" :href url :integrity sri :crossorigin "anonymous"))))
 
 
 (defn js
-  #_([url]
-   (let [sri (get raw-assets asset)]
-     (if (and url sri)
-       (js url sri)
-       (fn [] (script :src url)))))
+  ([url]
+   (fn [] (script :src url)))
   ([url sri]
    (fn [] (script :src url :integrity sri :crossorigin "anonymous"))))
 
@@ -126,18 +124,6 @@
     (str/ends-with? url ".min.css") [:mincss (css url sri)]
     (str/ends-with? url ".css") [:css (css url sri)]
     :default [:error url]))
-
-
-(defn- stylesheet [path] (link :rel "stylesheet" :href path))
-
-
-(defn load-css
-  [stylesheets]
-  (let [head (head)]
-    (if (sequential? stylesheets)
-      (doseq [s stylesheets]
-        (append-child head (stylesheet s)))
-      (append-child head (stylesheet stylesheets)))))
 
 
 ;; Better:
@@ -161,13 +147,12 @@
   If you want blocking behavior, use this together with jobs/with-blocking."
   [script-info script-cb]
   (let [script-dom-node (cond
-                          (fn? script-info)     (script-info)
-                          (vector? script-info) (let [[url sri] script-info]
-                                                  (h/script :src url :integrity sri :crossorigin "anonymous"))
-                          (string? script-info) (h/script :src script-info)
-                          :default              (throw (str "ERROR: Unable to load script: " script-info)))]
+                          (fn? script-info)         (script-info)
+                          (sequential? script-info) (let [[url sri] script-info] (js url sri))
+                          (string? script-info)     (js script-info)
+                          :default                  (throw (str "ERROR: Unable to load script: " script-info)))]
     (set! (.-onload script-dom-node) #(script-cb))
-    (.appendChild (-> js/document .-head) script-dom-node)))
+    (head! script-dom-node)))
 
 
 (defn load-scripts
