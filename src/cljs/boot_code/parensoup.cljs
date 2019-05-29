@@ -9,7 +9,7 @@
    [boot-code.ui :as ui]
    [util.html :as h]))
 
-(h/html (.-body js/document))
+#_(h/inner-html! (.-body js/document) nil)
 
 (def initial-code "(ns code.ui
   (:require [clojure.string :as s]))

@@ -509,11 +509,13 @@
    "theme/yonce.css" "sha256-WVERKyxmm3pMWnKc69/HKaM9YCy59C0QocGgCxSE2T0="
    "theme/yonce.min.css" "sha256-HFM4Phvlk2psw39d10NKt29TK9Arcr5jPITp/QZs+iU="
    "theme/zenburn.css" "sha256-R3gLzG1CnUNDkq7Vtjwm7+1rzj003xFYVzcA7hieqy8="
-   "theme/zenburn.min.css" "sha256-FvSQYX5Mr9r6S3pHJSJgiu1nE/ScW7a/XPOLtjxRF9k="}
+   "theme/zenburn.min.css" "sha256-FvSQYX5Mr9r6S3pHJSJgiu1nE/ScW7a/XPOLtjxRF9k="})
 
 
 (def cdn-base "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/")
-(defn url [asset] (str cdn-base asset-url))
+(def mode-url (str cdn-base "mode/%N/%N.js"))
+
+(defn- asset-url [asset] (str cdn-base asset))
 
 
 (defn split-path [p] (str/split p "/"))
@@ -548,7 +550,7 @@
 
 (defn compute-asset-map [[asset-map last-asset] [asset-path sri]]
   (let [next-asset (asset-name asset-path)
-        dom-fn (html/asset->dom-fn (url asset-path sri))]
+        dom-fn (html/asset->dom-fn (asset-url asset-path) sri)]
     (if (= last-asset next-asset)
       (add-asset-to-asset-type asset-map next-asset dom-fn)
       (add-new-asset-type asset-map next-asset dom-fn))))
@@ -596,4 +598,4 @@
 (def addon (partial assets-for all-addon-assets))
 (def keymap (partial assets-for all-keymap-assets))
 
-(def codemirror-assets (get (select-assets-matching codemirror?) "codemirror"))
+(def codemirror (get (select-assets-matching codemirror?) "codemirror"))

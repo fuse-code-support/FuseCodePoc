@@ -6,7 +6,7 @@
    [javelin.core :refer [cell]]
 
    [boot-code.jobs :as j]
-   [util.html :refer [load-scripts]]))
+   [util.html :refer [load-scripts!]]))
 
 
 (def default-loader (atom #(js/alert js/console "default-loader not overridden")))
@@ -43,5 +43,5 @@
 
 (defc= js (let [job-name (or (-> root :name) "Loading Javascript")
                 script-infos (mapcat (partial dynamic :minjs :js) (-> root :dynamic))]
-            (load-scripts job-name script-infos)))
+            (load-scripts! job-name script-infos)))
 (defc= page-init (-> root :init))

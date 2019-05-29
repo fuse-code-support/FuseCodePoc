@@ -27,6 +27,7 @@
                  [hoplon/hoplon             "7.2.0"]
                  [hoplon/javelin            "3.9.0"]
 
+                 [prismatic/dommy            "1.1.0"]
                  [clj-jgit                  "0.8.10"]
                  [eval-soup                 "1.4.3"]
                  [paren-soup                "2.12.3"]

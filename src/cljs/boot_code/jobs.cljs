@@ -29,6 +29,14 @@
       (<! continuation))))
 
 
+(defn wait-until
+  [predicate]
+  (loop []
+    (when-not (predicate)
+      (with-blocking #(.setTimeout js/window % 500))
+      (recur))))
+
+
 (defn- run-job [job]
   (reset! current-job-name (:name job))
   (reset! current-task-number 1)

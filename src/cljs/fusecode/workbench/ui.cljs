@@ -8,7 +8,9 @@
 
    [boot-code.ui :as ui]
    [boot-code.jobs :as job]
-   [util.html :as h]))
+   [util.html :as h]
+   [util.codemirror :as cm]
+   [util.codemirror-assets :as cm-assets]))
 
 
 (def materialize-base "https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0")
@@ -75,22 +77,23 @@
              {:name "Fira Code font"
               :css (link :href "https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css" :rel "stylesheet" :type "text/css")}]
 
-   :body [(div :class "navbar-fixed"
-               (nav :class (cell= (str inverse " z-depth-2")) :role "navigation"
-                    (div :class "nav-wrapper"
-                         (div :class "row"
-                              (div :class "col s12 padding-left: 1em;"
-                                   (a :id "logo-container" :href "#" :class "right brand-logo" (text logo-text))
-                                   (ul :class "hide-on-med-and-down"
-                                       (li :class "active" (a :class (cell= inverse-text) :href "#" "FuseCode"))
-                                       (li (a :class (cell= inverse-text) :href "#" "Untitled Workspace")))
+   :body [(div :id "outer"
+               (div :id "inner_fixed" :class "navbar-fixed"
+                    (nav :class (cell= (str inverse " z-depth-2")) :role "navigation"
+                         (div :class "nav-wrapper"
+                              (div :class "row"
+                                   (div :class "col s12 padding-left: 1em;"
+                                        (a :id "logo-container" :href "#" :class "right brand-logo" (text logo-text))
+                                        (ul :class "hide-on-med-and-down"
+                                            (li :class "active" (a :class (cell= inverse-text) :href "#" "FuseCode"))
+                                            (li (a :class (cell= inverse-text) :href "#" "Untitled Workspace")))
 
-                                   (ul :id "nav-mobile" :class "sidenav" (li (a :class (cell= inverse-text) :href "#" "Navbar Link")))
-                                   (a :href "#" :data-target "nav-mobile" :class "sidenav-trigger" (i :class "material-icons" "menu")))))))
+                                        (ul :id "nav-mobile" :class "sidenav" (li (a :class (cell= inverse-text) :href "#" "Navbar Link")))
+                                        (a :href "#" :data-target "nav-mobile" :class "sidenav-trigger" (i :class "material-icons" "menu")))))))
+               (div :id "inner_variable"))]
 
-          (textarea :class "content-container" "Hello")]
-
-   :init (fn [])})
+   :init #(let [editor-area (h/by-id "inner_variable")]
+            (cm/CodeMirror editor-area cm/defaults))})
 
 
 (defn activate [root-container] (reset! root-container window-content))

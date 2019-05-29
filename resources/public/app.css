@@ -8,16 +8,8 @@ html, body, #outer {
 body {
     font-variant-ligatures: contextual;
     font-feature-settings: "calt" 1;
-    display: flex;
+    display: table;
     flex-direction: column;
-    min-height: 100vh;
-}
-
-
-.content-container {
-  flex: 1 0 auto;
-  padding-top: 1vh;
-  width: 100%;
 }
 
 h1 {
@@ -34,8 +26,13 @@ h1 {
     display: table-row;
 }
 
-#inner_remaining {
-    /* background-color: #DDDDDD; */
-
+#inner_variable {
     display: table-row;
+}
+
+
+.CodeMirror {
+    /* background-color: #DDDDDD; */
+    height: 100%;
+    min-height: 100%;
 }

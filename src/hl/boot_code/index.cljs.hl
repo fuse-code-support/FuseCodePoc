@@ -26,9 +26,10 @@
   (cell= ui/css)
   (link :href "app.css" :rel "stylesheet")
 
-  (title (cell= ui/tab-title))) ; Probably put current project name in the editor
+  (title (cell= ui/tab-title)))          ; Probably put current project name in the editor
 
- (body (cell= ui/body)))
+ (body
+  (cell= ui/body)))
 
 (cell= (apply ui/page-init))
 

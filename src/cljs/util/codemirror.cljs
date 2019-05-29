@@ -2,55 +2,44 @@
   (:require-macros
    [javelin.core :refer [defc defc=]])
   (:require
-   [util.html :as html]
-   [util.codemirror-assets :as assets]
    [hoplon.core :as h :refer [script link]]
    [javelin.core :refer [cell]]
-   [castra.core :refer [mkremote]]))
+   [castra.core :refer [mkremote]]
+
+   [boot-code.jobs :as job]
+   [util.html :as html]
+   [util.codemirror-assets :as assets]))
 
 
-(def default-settings {:autoRefresh true
-                       :lineNumbers true
-                       :autoCloseBrackets true
-                       :foldGutter true
-                       :lineWrapping true
-                       :extraKeys {"Ctrl-Space" "autocomplete"
-                                   "Ctrl-/" "toggleComment"
-                                   "Ctrl-Home" "goDocStart"
-                                   "Ctrl-End" "goDocEnd"}
-                       :gutters ["CodeMirror-linenumbers" "CodeMirror-foldgutter"]
-                       :theme "default"})
+(def defaults {:autoRefresh true
+               :lineNumbers true
+               :autoCloseBrackets true
+               :foldGutter true
+               :lineWrapping true
+               :extraKeys {"Ctrl-Space" "autocomplete"
+                           "Ctrl-/" "toggleComment"
+                           "Ctrl-Home" "goDocStart"
+                           "Ctrl-End" "goDocEnd"}
+               :gutters ["CodeMirror-linenumbers" "CodeMirror-foldgutter"]
+               :theme "default"})
 
 
+(def default-addons
+  ["search/searchcursor" "search/search" "search/jump-to-line" "search/matchesonscrollbar" "search/match-highlighter"
+   "edit/matchbrackets" "edit/closebrackets"
+   "edit/matchtags" "edit/closetag"
+   "edit/continuelist"
+   "comment/comment" "comment/continuecomment"
+   "fold/foldcode" "fold/foldgutter"
+   "loadmode" "meta" "mode/overlay" "mode/multiplex"
+   "hint/show-hint" "hint/javascript-hint" "hint/xml-hint" "hint/html-hint" "hint/css-hint" "hint/sql-hint"
+   "lint/lint" "lint/html-lint" "lint/json-lint" "lint/javascript-lint" "lint/coffeescript-lint" "lint/css-lint"
+   "selection/mark-selection" "selection/active-line"
+   "display/autorefresh"
+   "scroll/annotatescrollbar"])
 
 
-
-#_(defn cm-script [path] (script :type "text/javascript" :src (str "CodeMirror/" path)))
-(defn stylesheet [path] (link :rel "stylesheet" :href path))
-
-
-(defn load-codemirror-css
-  []
-  (let [head (.-head js/document)]
-    (doseq [s stylesheets]
-      (html/append-child head (stylesheet (str "CodeMirror/" s))))
-    (html/append-child head (stylesheet "codemirror-local.css"))))
-
-
-(defn init-codemirror []
-  (set! js/CodeMirror.modeURL "CodeMirror/mode/%N/%N.js"))
-
-
-(defn load-codemirror-js
-  "Load CodeMirror js files"
-  [continuation-fn]
-  (html/get-scripts "CodeMirror/"
-                    codemirror-modules
-                    #(do (load-codemirror-css)
-                         (init-codemirror)
-                         (continuation-fn))))
-
-
+(defn load-addons [addons])
 
 ;; See also http://stackoverflow.com/questions/18828658/how-to-kill-a-codemirror-instance
 ;;   ...and http://bl.ocks.org/jasongrout/5378313   CodeMirror live widgets
@@ -62,21 +51,37 @@
 ;; WOOT for Ace in ScalaJS: https://github.com/d6y/wootjs
 ;; Generic WOOT in JS: https://github.com/TGOlson/woot-js
 
-;; PeerJs - WebRTC http://peerjs.com/
-
 ;; Clojurescript self-hosted https://github.com/clojure/clojurescript/wiki/Bootstrapping-the-Compiler
 
-;; Scala team's ClojureScript embedding: http://blog.scalac.io/2015/10/19/cljs-on-gh-pages.html
 ;; ScalaFiddle source https://github.com/scalafiddle/scalafiddle-core
 
+(defn- wait-for [msg pred-fn and-then]
+  (println msg)
+  (if (pred-fn)
+    (and-then)
+    (.setTimer js/window 1000 #(wait-for msg pred-fn and-then))))
 
-(defn create-editor
-  ([textarea config]
-   (when-let [editor (.fromTextArea js/CodeMirror textarea (clj->js config))]
-     (.focus editor)
-     editor))
+(defn CodeMirror
+  ([textarea-or-parent config]
+
+   (when-not (exists? js/CodeMirror)
+     (html/load-asset-map
+      assets/codemirror
+
+      (fn [] (wait-for "Waiting for CodeMirror..."
+                      #(exists? js/CodeMirror)
+                      #(let [js-config (clj->js config)
+                             editor    (if (= (.-tagName textarea-or-parent) "TEXTAREA")
+                                         (.fromTextArea js/CodeMirror textarea-or-parent js-config)
+                                         (js/CodeMirror textarea-or-parent js-config))]
+
+                         (set! (.-modeURL js/CodeMirror) assets/mode-url)
+                         (.refresh (.getCodeMirror editor))
+                         (.setSize editor "100%" "100%")
+                         editor))))))
+
   ([config]
-   (js/CodeMirror (.-body js/document) (clj->js config))))
+   (CodeMirror (.-body js/document) config)))
 
 
 ;; Functions on top of editor instance
@@ -111,8 +116,8 @@
 
 
 (let [file-ext-regex #".+\.([^.]+)$"]
-  (defn set-mode
-    "Set the editor's mode based on filename"
+  (defn set-mode!
+    "Set the editor's mode based on filename.  Defaults to Github Markdown if no mode can be determined from filename."
     [editor filename]
     (let [ext (last (re-seq file-ext-regex filename))
           info (if ext
@@ -125,11 +130,11 @@
         (.setOption editor "mode" spec)))))
 
 
-(defn get-value
+(defn value
    ([editor] (.getValue editor))
    ([editor sep] (.getValue editor sep)))
 
-(defn set-value
+(defn value!
    [editor value] (.setValue editor value))
 
 
@@ -140,21 +145,21 @@
     (.getRange editor (clj->js from) (clj->js to) sep)))
 
 
-(defn replace-range
+(defn replace-range!
    ([editor string from]
     (.replaceRange editor string (clj->js from)))
    ([editor string from to]
     (.replaceRange editor string (clj->js from) (clj->js to))))
 
-(defn get-line
+(defn line
    [editor n]
    (.getLine editor n))
 
-(defn set-line
+(defn set-line!
    [editor n text]
    (.setLine editor n text))
 
-(defn remove-line
+(defn remove-line!
    [editor n]
    (.removeLine editor n))
 
@@ -184,15 +189,15 @@
    ([editor start end function]
     (.eachLine editor start end function)))
 
-(defn mark-clean
+(defn mark-clean!
    [editor]
    (.markClean editor))
 
-(defn change-generation
+(defn change-generation!
    [editor]
    (.changeGeneration editor))
 
-(defn is-clean
+(defn clean?
    [editor]
    (.isClean editor))
 
@@ -203,7 +208,7 @@
    (.getSelection editor))
 
 ; -
-(defn replace-selection
+(defn replace-selection!
    [editor replacement]
    (.replaceSelection editor replacement))
 
@@ -212,42 +217,42 @@
    [editor]
    (.getCursor editor))
 
-(defn something-selected
+(defn something-selected?
    [editor]
    (.somethingSelected editor))
 
-(defn set-cursor
+(defn set-cursor!
    [editor pos]
    (.setCursor editor (clj->js pos)))
 
 ; -
-(defn set-selection
+(defn set-selection!
    [editor anchor]
    (.setSelection editor (clj->js anchor)))
 
 ; -
-(defn extend-selection
+(defn extend-selection!
    [editor from]
    (.extendSelection editor (clj->js from)))
 
-(defn set-extending
+(defn set-extending!
    [editor value]
    (.setExtending editor value))
 
-(defn has-focus
+(defn focused?
    [editor]
    (.hasFocus editor))
 
-(defn find-pos-h
+#_(defn find-pos-h
    [])
 
-(defn find-pos-v
+#_(defn find-pos-v
    [])
 
 
 ; Configuration methods
 
-(defn set-option
+(defn set-option!
    [editor option value]
    (.setOption editor option value))
 
@@ -255,22 +260,22 @@
    [editor option]
    (.getOption editor option))
 
-(defn add-key-map
+#_(defn add-key-map
    [])
 
-(defn remove-key-map
+#_(defn remove-key-map
    [])
 
-(defn add-overlay
+#_(defn add-overlay
    [])
 
-(defn remove-overlay
+#_(defn remove-overlay
    [])
 
-(defn on
+#_(defn on
    [])
 
-(defn off
+#_(defn off
    [])
 
 
@@ -285,7 +290,7 @@
    [doc]
    (.getEditor doc))
 
-(defn swap-doc
+(defn swap-doc!
    [editor doc]
    (.swapDoc editor doc))
 
@@ -293,22 +298,22 @@
    [doc]
    (.copy doc))
 
-(defn linked-doc
+#_(defn linked-doc
    [])
 
-(defn unlink-doc
+#_(defn unlink-doc
    [])
 
-(defn iter-linked-docs
+#_(defn iter-linked-docs
    [])
 
 
 ; History related methods
-(defn undo
+(defn undo!
    [editor]
    (.undo editor))
 
-(defn redo
+(defn redo!
    [editor]
    (.redo editor))
 
@@ -316,7 +321,7 @@
    [editor]
    (.historySize editor))
 
-(defn clear-history
+(defn clear-history!
    [editor]
    (.clearHistory editor))
 
@@ -324,24 +329,24 @@
    [editor]
    (.getHistory editor))
 
-(defn set-history
+#_(defn set-history
    [])
 
 
 
 ; Text marking methods
 
-(defn mark-text [editor from to options]
+(defn mark-text! [editor from to options]
   (.markText editor
             (clj->js from)
             (clj->js to)
             (clj->js options)))
 
-(defn set-bookmark
+#_(defn set-bookmark
    [])
 
-(defn find-marks-at
+#_(defn find-marks-at
    [])
 
-(defn get-all-marks
+#_(defn get-all-marks
   [])
